@@ -67,7 +67,6 @@ void __cdecl term_func()
 
 CFinalSunApp::CFinalSunApp()
 {
-	BOOL SetProcessDPIAware(); //YR Redux: fixed blurry UI when using display scaling
 
 	m_cf = RegisterClipboardFormat("FINAL*FORMAT");
 
