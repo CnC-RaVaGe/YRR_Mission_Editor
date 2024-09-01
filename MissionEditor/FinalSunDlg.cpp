@@ -381,10 +381,8 @@ BOOL CFinalSunDlg::OnInitDialog()
 	if(strlen(currentMapFile)==0) // no map file specified
 	{
 		// ok, let the user choose a map!
-		// hmm... no, don´t let him. we already have our tips dialog.
-		// OnFileOpenmap();
-
-		theApp.ShowTipAtStartup();
+		OnFileOpenmap();
+		//YR Redux: removed startup tips.
 	}
 	else // yah, map file specified
 	{

@@ -116,9 +116,6 @@ public:
 	UINT m_cf;
 	HACCEL m_hAccel;
 	void ParseCommandLine();
-	void ShowTipAtStartup(void);
-	void ShowTipOfTheDay(void);
-
 private:
 	std::string m_u8LogFileName;
 };

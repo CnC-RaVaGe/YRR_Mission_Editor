@@ -15,7 +15,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Deutsch (Deutschland) resources
+// German (Germany) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
@@ -57,12 +57,12 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Deutsch (Deutschland) resources
+#endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Englisch (USA) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -3355,7 +3355,6 @@ BEGIN
         MENUITEM "Manual\tF1",                  ID_HELP
         MENUITEM SEPARATOR
         MENUITEM "Info",                        ID_HELP_INFO
-        MENUITEM "Tip of the day",              ID_HELP_TIPOFTHEDAY
         MENUITEM SEPARATOR
         MENUITEM "Show logs",                   ID_HELP_SHOWLOGS
     END
@@ -3585,7 +3584,7 @@ BEGIN
     ID_MARBLEMADNESS        "Switch Framework Mode"
 END
 
-#endif    // Englisch (USA) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
