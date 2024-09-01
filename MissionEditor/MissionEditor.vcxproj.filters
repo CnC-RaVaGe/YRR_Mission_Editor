@@ -618,6 +618,9 @@
     <Image Include="res\bmp00005.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\toolbar1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Res\uqeue.wav">

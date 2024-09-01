@@ -1,12 +1,11 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Von Microsoft Visual C++ generierte Includedatei.
-// Verwendet durch MissionEditor.rc
+// Microsoft Visual C++ generated include file.
+// Used by MissionEditor.rc
 //
 #define IDD_TIBERIANSUNMISSIONEDITOR_DIALOG 102
 #define IDD_FINALSUN_DIALOG             102
 #define IDB_LIGHTBULB                   103
 #define IDD_TIP                         104
-
 #define IDR_MAINFRAME                   128
 #define IDR_MAIN                        129
 #define IDD_BASIC                       135
@@ -594,7 +593,8 @@
 #define ID_HELP_SHOWLOGS40140           40140
 #define ID_OPTIONS_SMOOTHZOOM           40141
 #define ID_OPTIONS_USEDEFAULTMOUSECURSOR 40142
-
+#define ID_BUTTON40154                  40154
+#define ID_BUTTON40155                  40155
 #define IDS_LINEARVERSION               57604
 #define IDC_TOOLTIPCENTER               65535
 
@@ -602,8 +602,8 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        300
-#define _APS_NEXT_COMMAND_VALUE         40144
+#define _APS_NEXT_RESOURCE_VALUE        302
+#define _APS_NEXT_COMMAND_VALUE         40158
 #define _APS_NEXT_CONTROL_VALUE         1464
 #define _APS_NEXT_SYMED_VALUE           111
 #endif

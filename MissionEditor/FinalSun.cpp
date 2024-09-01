@@ -67,6 +67,7 @@ void __cdecl term_func()
 
 CFinalSunApp::CFinalSunApp()
 {
+
 	m_cf = RegisterClipboardFormat("FINAL*FORMAT");
 
 	if (!m_cf) MessageBox(0, "Failed to register clipboard format, clipboard functions not available", "", 0);
@@ -392,22 +393,6 @@ void CFinalSunApp::ParseCommandLine()
 
 	strcpy(currentMapFile, data);
 #endif
-}
-
-void CFinalSunApp::ShowTipAtStartup(void)
-{
-	CTipDlg dlg;
-	if (dlg.m_bStartup)
-		dlg.DoModal();
-
-
-}
-
-void CFinalSunApp::ShowTipOfTheDay(void)
-{
-	CTipDlg dlg;
-	dlg.DoModal();
-
 }
 
 int CFinalSunApp::Run()

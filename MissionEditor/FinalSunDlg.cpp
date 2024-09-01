@@ -279,56 +279,61 @@ BOOL CFinalSunDlg::OnInitDialog()
 	success = success && m_bar.Create(RBS_AUTOSIZE, r, this, 5000);
 	success = success && m_maintoolbar.Create(this);
 	success = success && m_maintoolbar.LoadToolBar(IDR_MAINFRAME);
-	m_maintoolbar.GetToolBarCtrl().SetStyle(m_maintoolbar.GetToolBarCtrl().GetStyle() | TBSTYLE_FLAT | TBSTYLE_TRANSPARENT | TBSTYLE_TOOLTIPS);
+	m_maintoolbar.GetToolBarCtrl().SetStyle(m_maintoolbar.GetToolBarCtrl().GetStyle() | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS);
 	success = success && m_maintoolbar.GetToolBarCtrl().GetMaxSize(&size_mainbar);
-	success = success && m_terraintoolbar.Create(this);
-	success = success && m_terraintoolbar.LoadToolBar(IDR_TERRAINBAR);
-	m_terraintoolbar.GetToolBarCtrl().SetStyle(m_terraintoolbar.GetToolBarCtrl().GetStyle() | TBSTYLE_FLAT | TBSTYLE_TRANSPARENT | TBSTYLE_TOOLTIPS );
-	success = success && m_terraintoolbar.GetToolBarCtrl().GetMaxSize(&size_terrainbar);
-	m_terraintoolbar.SetBarStyle(m_terraintoolbar.GetBarStyle());
-	success = success && m_clifftoolbar.Create(this);
-	success = success && m_clifftoolbar.LoadToolBar(IDR_CLIFFBAR);
-	m_clifftoolbar.GetToolBarCtrl().SetStyle(m_clifftoolbar.GetToolBarCtrl().GetStyle() | TBSTYLE_FLAT | TBSTYLE_TRANSPARENT | TBSTYLE_TOOLTIPS );
-	m_clifftoolbar.SetBarStyle(m_terraintoolbar.GetBarStyle());
-
+	//YR Redux: merged toolbars
+	//success = success && m_terraintoolbar.Create(this);
+	//success = success && m_terraintoolbar.LoadToolBar(IDR_TERRAINBAR);
+	//m_terraintoolbar.GetToolBarCtrl().SetStyle(m_terraintoolbar.GetToolBarCtrl().GetStyle() | TBSTYLE_FLAT | TBSTYLE_TRANSPARENT | TBSTYLE_TOOLTIPS );
+	//success = success && m_terraintoolbar.GetToolBarCtrl().GetMaxSize(&size_terrainbar);
+	//m_terraintoolbar.SetBarStyle(m_terraintoolbar.GetBarStyle());
+	//YR Redux: removed cliff toolbar
+	//success = success && m_clifftoolbar.Create(this);
+	//success = success && m_clifftoolbar.LoadToolBar(IDR_CLIFFBAR);
+	//m_clifftoolbar.GetToolBarCtrl().SetStyle(m_clifftoolbar.GetToolBarCtrl().GetStyle() | TBSTYLE_FLAT | TBSTYLE_TRANSPARENT | TBSTYLE_TOOLTIPS );
+	//m_clifftoolbar.SetBarStyle(m_terraintoolbar.GetBarStyle());
 	success = success && m_settingsbar.Create(this, IDD_TOOLSETTINGS, CBRS_TOP, 6000);
-	
+
 	REBARBANDINFO rbi = { 0 };
 	rbi.cbSize= sizeof(REBARBANDINFO);
-	rbi.fMask= RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_STYLE | RBBIM_TEXT /*| RBBIM_SIZE*/ | RBBIM_IDEALSIZE;
-	rbi.fStyle= RBBS_GRIPPERALWAYS;
+	rbi.fMask = RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_STYLE | RBBIM_TEXT | RBBS_FIXEDSIZE ;
+	rbi.fStyle= RBBS_NOGRIPPER;
 	rbi.cxMinChild= size_mainbar.cx+30;
-	rbi.cyMinChild= 30;
+	rbi.cyMinChild= 48;
 	rbi.cch= 0;
 	rbi.cx= size_mainbar.cx+30; 
 	rbi.cxIdeal=size_mainbar.cx+30;
 	rbi.hbmBack= NULL;
 	rbi.hwndChild= (HWND)m_maintoolbar;
 	success = success && m_bar.InsertBand(0, &rbi);
-	rbi.hwndChild= (HWND)m_terraintoolbar;
-	rbi.cx=size_terrainbar.cx+30;
-	rbi.cxIdeal=size_terrainbar.cx+30;
-	rbi.cxMinChild= size_terrainbar.cx+30;
-	success = success && m_bar.InsertBand(1, &rbi);
-	rbi.hwndChild = (HWND)m_clifftoolbar;
-	rbi.cx = 560;
-	rbi.cxMinChild = 170;
-	rbi.cxIdeal = 560;
-	success = success && m_bar.InsertBand(2, &rbi);
+	//YR Redux: merged toolbars
+	//rbi.hwndChild= (HWND)m_terraintoolbar;
+	//rbi.cx=size_terrainbar.cx+30;
+	//rbi.cxIdeal=size_terrainbar.cx+30;
+	//rbi.cxMinChild= size_terrainbar.cx+30;
+	//success = success && m_bar.InsertBand(1, &rbi);
+	//YR Redux: Removed cliff toolbar
+	//rbi.hwndChild = (HWND)m_clifftoolbar;
+	//rbi.cx = 560;
+	//rbi.cxMinChild = 170;
+	//rbi.cxIdeal = 560;
+	//success = success && m_bar.InsertBand(2, &rbi);
 	rbi.hwndChild= (HWND)m_settingsbar;
+	rbi.fMask = RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_STYLE | RBBIM_TEXT | RBBS_FIXEDSIZE;
+	rbi.fStyle = RBBS_NOGRIPPER;
 	rbi.cxMinChild= 170;
 	rbi.cx=170;
 	rbi.cxIdeal=170;
-	success = success && m_bar.InsertBand(3, &rbi);
+	success = success && m_bar.InsertBand(1, &rbi);
 	
 
 	m_bar.ShowWindow(SW_SHOW);
 	m_maintoolbar.ShowWindow(SW_SHOW);
-	m_terraintoolbar.ShowWindow(SW_SHOW);
+	//m_terraintoolbar.ShowWindow(SW_SHOW);
 	m_settingsbar.ShowWindow(SW_SHOW);
 
 	m_bar.MinimizeBand(0);
-	m_bar.MaximizeBand(3);
+	m_bar.MaximizeBand(1);
 
 
 
@@ -381,10 +386,8 @@ BOOL CFinalSunDlg::OnInitDialog()
 	if(strlen(currentMapFile)==0) // no map file specified
 	{
 		// ok, let the user choose a map!
-		// hmm... no, don´t let him. we already have our tips dialog.
-		// OnFileOpenmap();
-
-		theApp.ShowTipAtStartup();
+		OnFileOpenmap();
+		//YR Redux: removed startup tips.
 	}
 	else // yah, map file specified
 	{
