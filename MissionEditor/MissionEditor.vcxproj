@@ -462,6 +462,7 @@
     <Image Include="res\scrollcursor_ts.bmp" />
     <Image Include="res\terrainb.bmp" />
     <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\toolbar1.bmp" />
     <Image Include="res\wp_ra2.bmp" />
     <Image Include="res\wp_ts.bmp" />
   </ItemGroup>
