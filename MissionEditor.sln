@@ -30,9 +30,11 @@ Global
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalAlertDebug YR|Win32.ActiveCfg = FinalAlertDebug YR|Win32
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalAlertDebug YR|Win32.Build.0 = FinalAlertDebug YR|Win32
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalAlertDebug|Win32.ActiveCfg = FinalAlertDebug|Win32
+		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalAlertDebug|Win32.Build.0 = FinalAlertDebug|Win32
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalAlertRelease YR|Win32.ActiveCfg = FinalAlertRelease YR|Win32
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalAlertRelease YR|Win32.Build.0 = FinalAlertRelease YR|Win32
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalAlertRelease|Win32.ActiveCfg = FinalAlertRelease|Win32
+		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalAlertRelease|Win32.Build.0 = FinalAlertRelease|Win32
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalSunDebug|Win32.ActiveCfg = FinalSunDebug|Win32
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.FinalSunRelease|Win32.ActiveCfg = FinalSunRelease|Win32
 		{9326D29A-6547-42B9-A668-519F3C0720A9}.Template|Win32.ActiveCfg = Template|Win32

@@ -116,6 +116,7 @@ if(nID==SC_CLOSE)
 	CFrameWnd::OnSysCommand(nID, lParam);
 }
 
+// Statusbar, Mouse Cursor object properties.
 void CMyViewFrame::OnSize(UINT nType, int cx, int cy) 
 {
 	// we now check if our frame window has already created its child windows
@@ -134,12 +135,31 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 	m_statbar.ShowWindow(SW_SHOW);
 	CRect sr;
 	GetWindowRect(sr);
-	//int Widths[]={sr.right-80,80,-1};
 	int Widths[]={sr.right-sr.left-130,-1};
 	stat.SetParts(2, Widths);
 	stat.SetSimple(FALSE);
 	m_statbar.ShowWindow(SW_SHOW);	
 }
+
+// YR Redux: Statusbar money on map.
+/*
+void CMyViewFrame::OnSize(moneyStr)
+{
+	auto moneyStr = std::format("Credits on map: {0}", Map->GetMoneyOnMap());
+	m_texts_to_render.push_back({ moneyStr.c_str(), r.left + 10, r.top + 10, RGB(0,0,0), true });
+
+	CFrameWnd::OnSize(moneyStr);
+	CStatusBarCtrl& stat = m_statbar.GetStatusBarCtrl();
+
+	m_statbar.ShowWindow(SW_SHOW);
+	CRect sr;
+	GetWindowRect(sr);
+	int Widths[] = { sr.right - sr.left - 200,-1 };
+	stat.SetParts(2, Widths); //3 YR Redux: Adding money on map to status bar.
+	stat.SetSimple(FALSE);
+	m_statbar.ShowWindow(SW_SHOW);
+}
+*/
 
 void CMyViewFrame::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI) 
 {

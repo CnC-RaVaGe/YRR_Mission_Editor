@@ -4205,7 +4205,7 @@ ProjectedCoords CIsoView::ScaleBackToFrontBuffer(const ProjectedCoords& backBuff
 	return ((ProjectedCoords(backBufferCoords.x, backBufferCoords.y) - windowPos) / m_viewScale).convertT<std::int32_t>() + windowPos;
 }
 
-
+// Statusbar map coordinates.
 void CIsoView::UpdateStatusBar(int x, int y)
 {
 	CString statusbar;//=TranslateStringACP("Ready");
