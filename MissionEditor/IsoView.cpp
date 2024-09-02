@@ -6029,10 +6029,17 @@ void CIsoView::DrawMap()
 #ifndef NOSURFACES
 					DrawCell(drawCoordsBld.x, drawCoordsBld.y, w, h, colorref_conv[objp.col]);
 #else
-					// MW 07/19/01: Paint cell if user chose so...
+					// MW 07/19/01: Paint cell if user chose so... (YR Redux Building Outline Drawing)
 					if (theApp.m_Options.bShowCells)
 					{
-						DrawCell(ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch, drawCoordsBld.x, drawCoordsBld.y, w, h, colorref_conv[objp.col]);
+						// YR Redux: Try to enable a black outline for building coloured outline.
+						COLORREF b = RGB(0, 0, 0);
+						DrawCell(ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch, drawCoordsBld.x, drawCoordsBld.y + 1, w, h, colorref_conv[b]);
+						DrawCell(ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch, drawCoordsBld.x, drawCoordsBld.y + 3, w, h, colorref_conv[b]);
+						
+						// House coloured building outline.
+						DrawCell(ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch, drawCoordsBld.x, drawCoordsBld.y + 2, w, h, colorref_conv[objp.col]);
+							
 					}
 #endif
 
@@ -6144,7 +6151,8 @@ void CIsoView::DrawMap()
 					{
 #endif
 						// place it 2 pixels lower so that user can see the dotted lines even if the building itself has the cells drawn
-						DrawCell(ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch, drawCoordsBld.x, drawCoordsBld.y + 3, w, h, colorref_conv[c], true);
+						// YR Redux: adjusted draw coords
+						DrawCell(ddsd.lpSurface, ddsd.dwWidth, ddsd.dwHeight, ddsd.lPitch, drawCoordsBld.x, drawCoordsBld.y + 2, w, h, colorref_conv[c], true);
 
 #ifdef NOSURFACES				
 					}
