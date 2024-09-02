@@ -3257,99 +3257,92 @@ IDR_MAIN MENU
 BEGIN
     POPUP "File"
     BEGIN
-        MENUITEM "New",                         ID_FILE_NEW
+        MENUITEM "New\tCTRL+N",                 ID_FILE_NEW
         MENUITEM SEPARATOR
-        MENUITEM "Open",                        ID_FILE_OPENMAP
+        MENUITEM "Open\tCTRL+O",                ID_FILE_OPENMAP
         MENUITEM SEPARATOR
-        MENUITEM "Save",                        ID_FILE_SAVE
-        MENUITEM "Save as",                     ID_FILE_SAVEAS
+        MENUITEM "Save\tCTRL+S",                ID_FILE_SAVE
+        MENUITEM "Save as\tCTRL+ALT+S",         ID_FILE_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "Check map",                   ID_FILE_VALIDATEMAP
-        MENUITEM SEPARATOR
-        MENUITEM "Quit",                        ID_FILE_QUIT
     END
     POPUP "Edit"
     BEGIN
-        MENUITEM "Undo\tCtrl+Z",                ID_EDIT_UNDO
-        MENUITEM "Redo\tCtrl+Y",                ID_EDIT_REDO
+        MENUITEM "Undo\tCTRL+Z",                ID_EDIT_UNDO
+        MENUITEM "Redo\tCTRL+Y",                ID_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Copy\tCtrl+C",                ID_EDIT_COPY
-        MENUITEM "Copy whole map",              ID_EDIT_COPYWHOLEMAP
-        MENUITEM "Paste\tCtrl+V",               ID_EDIT_PASTE
-        MENUITEM "Paste centered",              ID_EDIT_PASTEWHOLEMAP
+        MENUITEM "Copy\tCTRL+C",                ID_EDIT_COPY
+        MENUITEM "Paste\tCTRL+V",               ID_EDIT_PASTE
         MENUITEM SEPARATOR
-        MENUITEM "Map",                         ID_EDIT_MAP
-        MENUITEM "Basic",                       ID_EDIT_BASICSETTINGS
-        MENUITEM "Special flags",               ID_EDIT_SPECIALFLAGS
-        MENUITEM "Lighting",                    ID_EDIT_LIGHTING
+        MENUITEM "Copy Whole Map\tCTRL+SHIFT+C", ID_EDIT_COPYWHOLEMAP
+        MENUITEM "Paste Whole Map\tCTRL+SHIFT+V", ID_EDIT_PASTEWHOLEMAP
         MENUITEM SEPARATOR
-        MENUITEM "Singleplayer settings",       ID_EDIT_SINGLEPLAYERSETTINGS
-        MENUITEM SEPARATOR
-        MENUITEM "Houses",                      ID_EDIT_HOUSES
-        MENUITEM SEPARATOR
-        MENUITEM "Local variables (Locals)",    ID_EDIT_GLOBALVARIABLES
-        MENUITEM SEPARATOR
-        MENUITEM "Trigger editor",              ID_EDIT_TRIGGEREDITOR
-        MENUITEM "Tag editor",                  ID_EDIT_TAGS
-        MENUITEM SEPARATOR
-        MENUITEM "Scripts",                     ID_EDIT_SCRIPTS
-        MENUITEM SEPARATOR
-        MENUITEM "Taskforces",                  ID_EDIT_TASKFORCES
-        MENUITEM "Teams",                       ID_EDIT_TEAMS
-        MENUITEM SEPARATOR
-        MENUITEM "AI Triggers",                 ID_EDIT_AITRIGGERS
-        MENUITEM "AI Trigger enabling",         ID_EDIT_AITRIGGERENABLING
-        MENUITEM SEPARATOR
-        MENUITEM "INI editing",                 ID_EDIT_INIEDITING
     END
-    POPUP "Terrain"
+    POPUP "View"
     BEGIN
-        MENUITEM "Raise ground",                ID_TERRAIN_HEIGHTENGROUND
-        MENUITEM "Lower ground",                ID_TERRAIN_LOWERGROUND
-        MENUITEM "Flatten ground",              ID_TERRAIN_FLATTEN
+        MENUITEM "Show Minimap\tF2",            ID_OPTIONS_SHOWMINIMAP
+        MENUITEM "Show Building Outline\tCTRL+ALT+O", ID_OPTIONS_SHOWBUILDINGOUTLINE, CHECKED
         MENUITEM SEPARATOR
-        MENUITEM "Hide tileset",                ID_TERRAIN_CLOAK
-        MENUITEM "Show every tileset",          ID_TERRAIN_SHOWEVERYTILE
-        MENUITEM "Hide single field",           ID_TERRAIN_HIDEFIELD
-        MENUITEM "Show all fields",             ID_TERRAIN_SHOWALLFIELDS
+        MENUITEM "Show Waypoints",              ID_VIEW_WAYPOINTS, CHECKED, INACTIVE
+        MENUITEM "Show Cell-Tags",              ID_VIEW_SHOWCELL, CHECKED, INACTIVE
+        MENUITEM "Show Basenodes",              ID_VIEW_SHOWBASENODES, CHECKED, INACTIVE
         MENUITEM SEPARATOR
-        MENUITEM "Raise single tile (Be careful!)", ID_TERRAIN_RAISETILE
-        MENUITEM "Lower single tile (Be careful!)", ID_TERRAIN_LOWERTILE
+        MENUITEM "Show Terrain Objects",        ID_VIEW_SHOWOBJECTS, CHECKED, INACTIVE
+        MENUITEM "Show Overlays",               ID_VIEW_SHOWOVERLAY, CHECKED, INACTIVE
+        MENUITEM "Show Smudges",                ID_VIEW_SHOWSMUDGES, CHECKED, INACTIVE
+        MENUITEM SEPARATOR
+        MENUITEM "Show Structures",             ID_VIEW_SHOWSTRUCTURES, CHECKED, INACTIVE
+        MENUITEM "Show Vehicles",               ID_VIEW_SHOWVEHICLES, CHECKED, INACTIVE
+        MENUITEM "Show Infantry",               ID_VIEW_SHOWINFANTRY, CHECKED, INACTIVE
+        MENUITEM "Show Aircraft",               ID_VIEW_SHOWAIRCRAFT, CHECKED, INACTIVE
     END
-    POPUP "Map tools"
+    POPUP "Tools"
     BEGIN
-        MENUITEM "Change map height",           ID_MAPTOOLS_CHANGEMAPHEIGHT
+        MENUITEM "Debug Map\tF12",              ID_FILE_VALIDATEMAP
         MENUITEM SEPARATOR
-        MENUITEM "Autocreate shores",           ID_MAPTOOLS_AUTOCREATESHORES
-        MENUITEM "Auto level using cliffs",     ID_MAPTOOLS_AUTOLEVEL
+        MENUITEM "Change Map Size",             ID_EDIT_MAP
+        MENUITEM "Change Map Height",           ID_MAPTOOLS_CHANGEMAPHEIGHT
+        MENUITEM "Change Map Lighting",         ID_EDIT_LIGHTING
         MENUITEM SEPARATOR
-        MENUITEM "Paint cliff front",           ID_MAPTOOLS_FRONTCLIFF
-        MENUITEM "Paint cliff back",            ID_MAPTOOLS_BACKCLIFF
+        MENUITEM "Houses Editor",               ID_EDIT_HOUSES
+        MENUITEM "INI Editor\tCTRL+I",          ID_EDIT_INIEDITING
         MENUITEM SEPARATOR
-        MENUITEM "Search Waypoint",             ID_MAPTOOLS_SEARCHWAYPOINT
+        MENUITEM "Macro Scripts",               ID_MAPTOOLS_TOOLSCRIPTS
+    END
+    POPUP "Triggers"
+    BEGIN
+        MENUITEM "Trigger Editor\tCTRL+T",      ID_EDIT_TRIGGEREDITOR
+        MENUITEM "Tag Editor\tCTRL+G",          ID_EDIT_TAGS
+        MENUITEM "Local Variables\tCTRL+L",     ID_EDIT_GLOBALVARIABLES
         MENUITEM SEPARATOR
-        MENUITEM "Tool Scripts",                ID_MAPTOOLS_TOOLSCRIPTS
+        MENUITEM "AI Taskforces\tCTRL+U",       ID_EDIT_TASKFORCES
+        MENUITEM "AI Scripts\tCTRL+R",          ID_EDIT_SCRIPTS
+        MENUITEM "AI Teams\tCTRL+M",            ID_EDIT_TEAMS
+        MENUITEM "AI Trigger Editor\tCTRL+E",   ID_EDIT_AITRIGGERS
+        MENUITEM "AI Trigger Manager\tCTRL+A",  ID_EDIT_AITRIGGERENABLING
+        MENUITEM SEPARATOR
+        MENUITEM "Search Waypoint\tCTRL+F",     ID_MAPTOOLS_SEARCHWAYPOINT
+    END
+    POPUP "Flags"
+    BEGIN
+        MENUITEM "Basic\tCTRL+B",               ID_EDIT_BASICSETTINGS
+        MENUITEM "Special\tCTRL+P",             ID_EDIT_SPECIALFLAGS
+        MENUITEM "Singleplayer\tCTRL+H",        ID_EDIT_SINGLEPLAYERSETTINGS
     END
     POPUP "Options"
     BEGIN
-        MENUITEM "Settings",                    ID_OPTIONS_TIBERIANSUNOPTIONS
-        MENUITEM "Show minimap",                ID_OPTIONS_SHOWMINIMAP
-        MENUITEM "Easy mode",                   ID_OPTIONS_SIMPLEVIEW
-        MENUITEM "Sounds",                      ID_OPTIONS_SOUNDS
-        MENUITEM "Show Building Outline",       ID_OPTIONS_SHOWBUILDINGOUTLINE
-        MENUITEM "Disable AutoShore\tCTRL-A",   ID_OPTIONS_DISABLEAUTOSHORE
-        MENUITEM "Disable AutoLat\tCTRL-L",     ID_OPTIONS_DISABLEAUTOLAT
         MENUITEM "Disable Slope Correction",    ID_OPTIONS_DISABLESLOPECORRECTION
-        MENUITEM "Smooth zoom",                 ID_OPTIONS_SMOOTHZOOM
-        MENUITEM "Use default mouse cursor",    ID_OPTIONS_USEDEFAULTMOUSECURSOR
+        MENUITEM "Disable Auto-Shore\tCTRL+A",  ID_OPTIONS_DISABLEAUTOSHORE, CHECKED
+        MENUITEM "Disable Auto-LAT\tCTRL+L",    ID_OPTIONS_DISABLEAUTOLAT
+        MENUITEM SEPARATOR
+        MENUITEM "Settings",                    ID_OPTIONS_TIBERIANSUNOPTIONS
     END
     POPUP "Help"
     BEGIN
         MENUITEM "Manual\tF1",                  ID_HELP
         MENUITEM SEPARATOR
-        MENUITEM "Info",                        ID_HELP_INFO
+        MENUITEM "Debug Log",                   ID_HELP_SHOWLOGS
         MENUITEM SEPARATOR
-        MENUITEM "Show logs",                   ID_HELP_SHOWLOGS
+        MENUITEM "About",                       ID_HELP_INFO
     END
 END
 #endif

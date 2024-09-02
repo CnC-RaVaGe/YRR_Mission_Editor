@@ -595,6 +595,17 @@
 #define ID_OPTIONS_USEDEFAULTMOUSECURSOR 40142
 #define ID_BUTTON40154                  40154
 #define ID_BUTTON40155                  40155
+#define ID_VIEW_SHOWOVERLAY             40158
+#define ID_VIEW_SHOWOBJECTS             40159
+#define ID_VIEW_SHOWSTRUCTURES          40160
+#define ID_VIEW_SHOWINFANTRY            40161
+#define ID_Menu                         40162
+#define ID_VIEW_SHOWAIRCRAFT            40163
+#define ID_VIEW_WAYPOINTS               40164
+#define ID_VIEW_SHOWVEHICLES            40165
+#define ID_VIEW_SHOWSMUDGES             40166
+#define ID_VIEW_SHOWBASENODES           40167
+#define ID_VIEW_SHOWCELL                40168
 #define IDS_LINEARVERSION               57604
 #define IDC_TOOLTIPCENTER               65535
 
@@ -603,7 +614,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        302
-#define _APS_NEXT_COMMAND_VALUE         40158
+#define _APS_NEXT_COMMAND_VALUE         40169
 #define _APS_NEXT_CONTROL_VALUE         1464
 #define _APS_NEXT_SYMED_VALUE           111
 #endif
