@@ -213,6 +213,8 @@ private:
 	std::unique_ptr<VoxelNormalTables> m_voxelNormalTables;
 	
 	
+public:
+	afx_msg void OnStnClickedVersion();
 };
 
 //{{AFX_INSERT_LOCATION}}

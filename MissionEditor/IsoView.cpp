@@ -828,7 +828,9 @@ void CIsoView::Dump(CDumpContext& dc) const
 void CIsoView::updateFontScaled()
 {
 	auto dc = CDC::FromHandle(::GetDC(NULL));
-	m_fontDefaultHeight = -MulDiv(12, dc->GetDeviceCaps(LOGPIXELSY), 72);
+	//YR Redux: Changed font size
+	// fontDefaultHeight changed from 11 to 8, and 72 to 128.
+	m_fontDefaultHeight = -MulDiv(8, dc->GetDeviceCaps(LOGPIXELSY), 128);
 	m_Font9Height = -MulDiv(9, dc->GetDeviceCaps(LOGPIXELSY), 72);
 
 	if (dd)
@@ -841,6 +843,10 @@ void CIsoView::updateFontScaled()
 		m_textBlueScaled.reset(new TextDrawer(dd, m_fontDefaultHeight / m_viewScale.y, RGB(0, 0, 255), RGB(255, 255, 255)));
 		m_textBlue9.reset(new TextDrawer(dd, m_Font9Height, RGB(0, 0, 255), RGB(255, 255, 255)));
 		m_textBlue9Scaled.reset(new TextDrawer(dd, m_Font9Height / m_viewScale.y, RGB(0, 0, 255), RGB(255, 255, 255)));
+		m_textGreen.reset(new TextDrawer(dd, m_fontDefaultHeight, RGB(0, 255, 0), RGB(0, 0, 0)));
+		m_textGreenScaled.reset(new TextDrawer(dd, m_fontDefaultHeight / m_viewScale.y, RGB(0, 255, 0), RGB(0, 0, 0)));
+		m_textGreen9.reset(new TextDrawer(dd, m_Font9Height, RGB(0, 255, 0), RGB(0, 0, 0)));
+		m_textGreen9Scaled.reset(new TextDrawer(dd, m_Font9Height / m_viewScale.y, RGB(0, 255, 0), RGB(0, 0, 0)));
 	}
 }
 
@@ -6484,15 +6490,15 @@ void CIsoView::DrawMap()
 #ifdef RA2_MODE
 				int image_fudge_x = 4;
 				int image_fudge_y = -20;
-				int text_fudge_x = 12;
-				int text_fudge_y = -24;
+				//YR Redux: set waypoint numbers to display on the cell.
+				int text_fudge_x = 0; //12
+				int text_fudge_y = -1; //-24
 #else
 				int image_fudge_x = 4;
 				int image_fudge_y = -15;
 				int text_fudge_x = 9;
 				int text_fudge_y = -17;
 #endif
-
 				const ProjectedVec waypointImageOffset(image_fudge_x, image_fudge_y);
 				const ProjectedVec waypointTextOffset((f_x / 2) + text_fudge_x, (f_y / 2) + text_fudge_y);
 #ifdef RA2_MODE
@@ -6503,7 +6509,8 @@ void CIsoView::DrawMap()
 				const auto waypointImageCoords = ProjectedCoords({ drawCoords.x, drawCoords.y }) + waypointImageOffset;
 				const auto waypointTextCoords = ProjectedCoords({ drawCoords.x, drawCoords.y }) + waypointTextOffset;
 				m_waypoints_to_render.push_back({ waypointImageCoords.x, waypointImageCoords.y });
-				m_texts_to_render.push_back({ ID.GetString(), waypointTextCoords.x, waypointTextCoords.y, RGB(0,0,255), false, useFont9, true});
+				//YR Redux: changed waypoint numbers to green from blue.
+				m_texts_to_render.push_back({ ID.GetString(), waypointTextCoords.x, waypointTextCoords.y, RGB(0,255,0), false, useFont9, true});
 #ifdef NOSURFACES				
 				lpdsBack->Lock(NULL, &ddsd, DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT | DDLOCK_NOSYSLOCK, NULL);
 #endif
@@ -6649,14 +6656,15 @@ void CIsoView::RenderUIOverlay()
 	for (const auto& s : m_texts_to_render)
 	{
 		const bool blue = s.color == RGB(0, 0, 255);  // TODO: TextRenderer should support setting the color at render time
+		const bool green = s.color == RGB(0, 255, 0);
 		if (s.fixedScreenPos || !useHighRes)
 		{
-			auto textRenderer = s.useFont9 ? (blue ? *m_textBlue9 : *m_text9) : (blue ? *m_textBlue : *m_textDefault);
+			auto textRenderer = s.useFont9 ? (green ? *m_textGreen9 : *m_text9) : (green ? *m_textGreen : *m_textDefault);
 			textRenderer.RenderText(dds, s.drawx, s.drawy, s.text, s.centered);
 		}
 		else
 		{
-			auto textRenderer = s.useFont9 ? (blue ? *m_textBlue9Scaled : *m_text9Scaled) : (blue ? *m_textBlueScaled : *m_textScaled);
+			auto textRenderer = s.useFont9 ? (green ? *m_textGreen9Scaled : *m_text9Scaled) : (green ? *m_textGreenScaled : *m_textScaled);
 			textRenderer.RenderText(dds, r.left + (s.drawx - r.left) / m_viewScale.x, r.top + (s.drawy - r.top) / m_viewScale.y, s.text, s.centered);
 		}
 	}
