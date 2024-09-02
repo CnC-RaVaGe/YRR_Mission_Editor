@@ -562,8 +562,12 @@ void CLoading::InitPics(CProgressCtrl* prog)
 		}
 	}
 
+	
+	
 	DDSURFACEDESC2 desc;
 
+	//YR Redux: Removed scroll cursor as its distracting.
+	/*
 	try {
 		pics["SCROLLCURSOR"].pic = BitmapToSurface(((CFinalSunDlg*)theApp.m_pMainWnd)->m_view.m_isoview->dd, *BitmapFromResource(IDB_SCROLLCURSOR)).Detach();
 		FSunPackLib::SetColorKey((LPDIRECTDRAWSURFACE4)pics["SCROLLCURSOR"].pic, -1);
@@ -578,6 +582,7 @@ void CLoading::InitPics(CProgressCtrl* prog)
 	catch (const BitmapNotFound&)
 	{
 	}
+	*/
 
 	try {
 		pics["CELLTAG"].pic = BitmapToSurface(((CFinalSunDlg*)theApp.m_pMainWnd)->m_view.m_isoview->dd, *BitmapFromResource(IDB_CELLTAG)).Detach();
