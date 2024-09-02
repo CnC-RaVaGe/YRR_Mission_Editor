@@ -116,6 +116,7 @@ BEGIN_MESSAGE_MAP(CLoading, CDialog)
 	ON_WM_DESTROY()
 	ON_WM_PAINT()
 	//}}AFX_MSG_MAP
+	ON_STN_CLICKED(IDC_VERSION, &CLoading::OnStnClickedVersion)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -6969,4 +6970,10 @@ void CLoading::CreateConvTable(RGBTRIPLE *pal, int *iPal)
 	{
 		iPal[i]=conf.GetColor(pal[i].rgbtRed, pal[i].rgbtGreen, pal[i].rgbtBlue);
 	}
+}
+
+
+void CLoading::OnStnClickedVersion()
+{
+	// TODO: Add your control notification handler code here
 }

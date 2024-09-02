@@ -28,11 +28,12 @@
 TextDrawer::TextDrawer(IDirectDraw4* pDirectDraw, int fontSizeInPoints, COLORREF col, COLORREF shadowCol): m_fontSizeInPoints(fontSizeInPoints), m_col(col), m_shadowCol(shadowCol)
 {
     auto dc = CDC::FromHandle(::GetDC(NULL));
-    auto fontSizeInPixels = -MulDiv(fontSizeInPoints, dc->GetDeviceCaps(LOGPIXELSY), 72);
+    auto fontSizeInPixels = -MulDiv(fontSizeInPoints, dc->GetDeviceCaps(LOGPIXELSY), 72); //72 YR Redux: changed font DPI
     m_fontSizeInPixels = fontSizeInPixels;
 
+    //YR Redux: Changed font from bold to normal (FW_BOLD)
     CFont f;
-    f.CreateFont(fontSizeInPixels, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, VARIABLE_PITCH, "COURIER NEW");
+    f.CreateFont(fontSizeInPixels, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, VARIABLE_PITCH, "COURIER NEW");
 
     // Build a string that contains all required characters in order
     std::string s;

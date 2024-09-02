@@ -1319,7 +1319,7 @@ void CMapData::Pack(BOOL bCreatePreview, BOOL bCompression)
 			}
 		}
 
-
+		//TODO: See if possible to use a different encoding to make map previews smaller.
 		hexpacked = NULL;
 		hexpackedLen = FSunPackLib::EncodeIsoMapPack5(lpRAW, biinfo.bmiHeader.biWidth * biinfo.bmiHeader.biHeight * 3, &hexpacked);
 

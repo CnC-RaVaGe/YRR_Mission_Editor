@@ -362,6 +362,10 @@ public:
 	std::unique_ptr<TextDrawer> m_textBlue9;
 	std::unique_ptr<TextDrawer> m_textBlueScaled;
 	std::unique_ptr<TextDrawer> m_textBlue9Scaled;
+	std::unique_ptr<TextDrawer> m_textGreen;
+	std::unique_ptr<TextDrawer> m_textGreen9;
+	std::unique_ptr<TextDrawer> m_textGreenScaled;
+	std::unique_ptr<TextDrawer> m_textGreen9Scaled;
 
 private:
 	void UpdateScrollRanges();
