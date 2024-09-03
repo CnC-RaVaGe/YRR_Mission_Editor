@@ -1439,26 +1439,6 @@ void CIsoView::OnMouseMove(UINT nFlags, CPoint point)
 	}
 	
 
-
-
-
-
-	// display the coordinates	
-	char c[50];
-	CString cap;
-	itoa(x, c, 10);
-	cap += c;
-	cap += " / ";
-	itoa(y, c, 10);
-	cap += c;
-	cap += " - ";
-	itoa(Map->GetHeightAt(x + y * Map->GetIsoSize()), c, 10);
-	cap += c;
-
-	CStatusBarCtrl& stat = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	stat.SetText(cap, 1, 0);
-
-
 	// drag
 	if (m_drag && AD.mode == 0)
 	{
@@ -4205,25 +4185,55 @@ ProjectedCoords CIsoView::ScaleBackToFrontBuffer(const ProjectedCoords& backBuff
 	return ((ProjectedCoords(backBufferCoords.x, backBufferCoords.y) - windowPos) / m_viewScale).convertT<std::int32_t>() + windowPos;
 }
 
-// Statusbar map coordinates.
+// YR Redux: Statusbar items.
 void CIsoView::UpdateStatusBar(int x, int y)
 {
-	CString statusbar;//=TranslateStringACP("Ready");
+	char c[50];
+	CString statusbar;
 
+	// YR Redux: show money on map in the statusbar.
+	CString moneyStat;
+	moneyStat = "  Money On Map: $";
+	int money;
+	money = Map->GetMoneyOnMap();
+	itoa(money, c, 10);
+	moneyStat += c;
+
+	CStatusBarCtrl& mos = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	mos.SetText(moneyStat, 0, 0);
+
+
+	// display the current cell (under the mouse cursor) coordinate.
+	CString cap;
+	cap = " Cell: X";
+	itoa(x, c, 10);
+	cap += c;
+	cap += ", Y";
+	itoa(y, c, 10);
+	cap += c;
+	cap += ", Height ";
+	itoa(Map->GetHeightAt(x + y * Map->GetIsoSize()), c, 10);
+	cap += c;
+
+	CStatusBarCtrl& cos = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	cos.SetText(cap, 1, 0);
+
+
+	// Displays Terrain type under mouse cursor.
 	FIELDDATA m = *Map->GetFielddataAt(x + y * Map->GetIsoSize());
 	if (m.wGround == 0xFFFF) m.wGround = 0;
 
+	CString TerrainStat;
 	if (m.wGround < (*tiledata_count) && m.bSubTile < (*tiledata)[m.wGround].wTileCount)
 	{
-		statusbar = "Terrain type: 0x";
+		TerrainStat = " Terrain Type: 0x";
 		char c[50];
 		itoa((*tiledata)[m.wGround].tiles[m.bSubTile].bTerrainType, c, 16);
-		statusbar += c;
-		statusbar += ", height: ";
-		itoa(m.bHeight, c, 10);
-		statusbar += c;
-		statusbar += " / ";
+		TerrainStat += c;
 	}
+	
+	CStatusBarCtrl& tts = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	tts.SetText(TerrainStat, 2, 0);
 
 
 	if (Map->GetOverlayAt(x + y * Map->GetIsoSize()) != 0xFF)
