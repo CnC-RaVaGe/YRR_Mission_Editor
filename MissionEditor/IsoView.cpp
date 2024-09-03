@@ -4192,31 +4192,31 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	CString statusbar;
 
 	// YR Redux: show money on map in the statusbar.
-	CString moneyStat;
-	moneyStat = "  Money On Map: $";
+	CString MoneyStat;
+	MoneyStat = "  Money On Map: ";
 	int money;
 	money = Map->GetMoneyOnMap();
 	itoa(money, c, 10);
-	moneyStat += c;
+	MoneyStat += c;
 
 	CStatusBarCtrl& mos = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	mos.SetText(moneyStat, 0, 0);
+	mos.SetText(MoneyStat, 0, 0);
 
 
-	// display the current cell (under the mouse cursor) coordinate.
-	CString cap;
-	cap = " Cell: X";
+	// display currently selected cell X,Y,Z coordinates in the statusbar.
+	CString CoordStat;
+	CoordStat = " Cell: X";
 	itoa(x, c, 10);
-	cap += c;
-	cap += ", Y";
+	CoordStat += c;
+	CoordStat += ", Y";
 	itoa(y, c, 10);
-	cap += c;
-	cap += ", Height ";
+	CoordStat += c;
+	CoordStat += ", Z";
 	itoa(Map->GetHeightAt(x + y * Map->GetIsoSize()), c, 10);
-	cap += c;
+	CoordStat += c;
 
 	CStatusBarCtrl& cos = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	cos.SetText(cap, 1, 0);
+	cos.SetText(CoordStat, 1, 0);
 
 
 	// Displays Terrain type under mouse cursor.
@@ -4236,49 +4236,81 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	tts.SetText(TerrainStat, 2, 0);
 
 
+	// Display overlay type in the statusbar.
+	char ov[50];
+	CString name;
+	CString overlaystat;
 	if (Map->GetOverlayAt(x + y * Map->GetIsoSize()) != 0xFF)
 	{
-		char ov[50];
+		
 		itoa(Map->GetOverlayAt(x + y * Map->GetIsoSize()), ov, 16);
 
 		int i;
-		CString name;
 		name = "0x";
 		name += ov;
 		for (i = 0;i < overlay_count;i++)
 		{
 			if (overlay_number[i] == Map->GetOverlayAt(x + y * Map->GetIsoSize()))
-				name = overlay_name[i];
+				name += overlay_name[i];
 		}
-
-
-		itoa(Map->GetOverlayDataAt(x + y * Map->GetIsoSize()), ov, 16);
-
-		statusbar += GetLanguageStringACP("OvrlStatus");
-		statusbar += TranslateStringACP(name);
-		statusbar += ", OverlayData: 0x";
-		statusbar += ov;
 	}
 
+	if (name == "")
+	{
+		name = "none";
+	}
+
+	if (name == "0x70" || name == "0x66")
+	{
+		name = "Ore";
+	}
+
+	overlaystat += " Overlay Type: ";
+	overlaystat += TranslateStringACP(name);
+
+	CStatusBarCtrl& ots = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	ots.SetText(overlaystat, 3, 0);
+
+
+	// Display overlay data in the statusbar.
+	char od[50];
+	CString overlaydatastat;
+	if (Map->GetOverlayAt(x + y * Map->GetIsoSize()) != 0xFF)
+	{
+		itoa(Map->GetOverlayDataAt(x + y * Map->GetIsoSize()), od, 16);
+		overlaydatastat += " OverlayData: 0x";
+		overlaydatastat += od;
+	}
+
+	if (overlaydatastat == "")
+	{
+		overlaydatastat += " OverlayData: none";
+	}
+
+	CStatusBarCtrl& ods = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	ods.SetText(overlaydatastat, 4, 0);
+
+
+	// Display object data in the statusbar.
 	STDOBJECTDATA sod;
 	sod.type = "";
 
+	CString ObjectStatus;
+	ObjectStatus = " No object selected.";
 	int n = Map->GetStructureAt(x + y * Map->GetIsoSize());
 	int on = -1;
 	if (n >= 0)
 	{
-
 		Map->GetStdStructureData(n, &sod);
-		statusbar = GetLanguageStringACP("StructStatus");
+		ObjectStatus = " " + GetLanguageStringACP("StructStatus");
 		on = n;
 	}
 
 	n = Map->GetUnitAt(x + y * Map->GetIsoSize());
 	if (n >= 0)
 	{
-
 		Map->GetStdUnitData(n, &sod);
-		statusbar = GetLanguageStringACP("UnitStatus");
+		ObjectStatus = " " + GetLanguageStringACP("UnitStatus");
 		on = n;
 
 	}
@@ -4286,9 +4318,8 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	n = Map->GetAirAt(x + y * Map->GetIsoSize());
 	if (n >= 0)
 	{
-
 		Map->GetStdAircraftData(n, &sod);
-		statusbar = GetLanguageStringACP("AirStatus");
+		ObjectStatus = " " + GetLanguageStringACP("AirStatus");
 		on = n;
 	}
 
@@ -4296,7 +4327,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	if (n >= 0)
 	{
 		Map->GetStdInfantryData(n, &sod);
-		statusbar = GetLanguageStringACP("InfStatus");
+		ObjectStatus = " " + GetLanguageStringACP("InfStatus");
 		on = n;
 	}
 
@@ -4304,18 +4335,17 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	{
 		char c[50];
 		itoa(on, c, 10);
-		statusbar += "ID ";
-		statusbar += c;
-		statusbar += ", ";
-
-		statusbar += TranslateStringACP(Map->GetUnitName(sod.type));
-		statusbar += " (";
-
-		statusbar += TranslateHouse(sod.house, TRUE);
-		statusbar += ", ";
-		statusbar += sod.type;
-		statusbar += ")";
+		ObjectStatus += sod.type;
+		ObjectStatus += " ";
+		ObjectStatus += TranslateStringACP(Map->GetUnitName(sod.type));
+		ObjectStatus += " ";
+		ObjectStatus += "(" + TranslateHouse(sod.house, TRUE) + ")";
+		ObjectStatus += " ID ";
+		ObjectStatus += c;
 	}
+
+	CStatusBarCtrl& ops = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	ops.SetText(ObjectStatus, 5, 0);
 
 	/*
 	// activate this code to display information about the mappack!
@@ -4373,6 +4403,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 		SetError(statusbar);
 
 }
+
 
 void CIsoView::UpdateOverlayPictures(int id)
 {
