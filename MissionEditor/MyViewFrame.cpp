@@ -136,8 +136,17 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 	CRect sr;
 	GetWindowRect(sr);
 	int Widths[]={
-		sr.right / 10, Widths[0] * 2, Widths[0] * 3, Widths[0] * 4, Widths[0] * 5, - 1/*, sr.right / 4, sr.right / 3, sr.right / 2, -1*/
+		sr.right / 10,
+		Widths[0] * 3,
+		Widths[0] * 3,
+		Widths[0] * 4,
+		Widths[0] * 5,
+		Widths[0] * 6,
+		- 1
 	};
+
+	Widths[0] += 32;
+	Widths[1] += 32;
 
 	stat.SetMinHeight(32);
 	stat.SetParts(6, Widths);

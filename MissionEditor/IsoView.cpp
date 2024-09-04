@@ -4200,12 +4200,12 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	MoneyStat += c;
 
 	CStatusBarCtrl& mos = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	mos.SetText(MoneyStat, 0, 0);
+	mos.SetText(MoneyStat, 5, 0);
 
 
 	// display currently selected cell X,Y,Z coordinates in the statusbar.
 	CString CoordStat;
-	CoordStat = " Cell: X";
+	CoordStat = " Current Position: X";
 	itoa(x, c, 10);
 	CoordStat += c;
 	CoordStat += ", Y";
@@ -4216,7 +4216,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	CoordStat += c;
 
 	CStatusBarCtrl& cos = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	cos.SetText(CoordStat, 1, 0);
+	cos.SetText(CoordStat, 0, 0);
 
 
 	// Displays Terrain type under mouse cursor.
@@ -4345,7 +4345,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	}
 
 	CStatusBarCtrl& ops = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	ops.SetText(ObjectStatus, 5, 0);
+	ops.SetText(ObjectStatus, 1, 0);
 
 	/*
 	// activate this code to display information about the mappack!
