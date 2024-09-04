@@ -136,56 +136,35 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 	CRect sr;
 	GetWindowRect(sr);
 
-	// Statusbar part widths at screen widths greater than 1920.
-	int Widths[] = {
-		sr.right / 10,
-		Widths[0] * 6 /*768*/,
-		Widths[0] * 7 /*1024*/,
-		Widths[0] * 8 /*1280*/,
-		Widths[0] * 9 /*1536*/,
-		Widths[0] * 10 /*1792*/,
+	int SegmentWidth = sr.right / 8;
+
+	// Statusbar part widths.
+	//TODO: Add if statements to check sr.right value for screen width and set widths for responsive hiding of fields.
+	int Widths[6] = {
+		308,
+		sr.right - (SegmentWidth * 4),
+		sr.right - (SegmentWidth * 3),
+		sr.right - (SegmentWidth * 2),
+		sr.right - 300,
 		-1
 	};
 
-	Widths[0] += 48;
-	Widths[1] -= 224;
-	Widths[2] -= 128;
-	Widths[3] -= 32;
-	Widths[4] -= 32;
-
-	int i;
-	int statusBarWidth = 0;
-	for (i = 0; i < sizeof(Widths) / sizeof(int); i++)
+	if (sr.right <= 1920)
 	{
-		Widths[i] += statusBarWidth;
-	}
+		Widths[1] = sr.right - (SegmentWidth * 4.5);
+		Widths[2] = 0;
+		Widths[3] = sr.right - (SegmentWidth * 3);
+	} 
 
-	
-	// Statusbar part widths at screen widths lower than 1920.
-	if (statusBarWidth < 1920)
+	if (sr.right <= 1600)
 	{
-		Widths[0] = 304;
-		Widths[1] -= 192;
-		Widths[2] -= 192;
-		Widths[3] -= 192;
-		Widths[4] -= 192;
-		Widths[5] = -1;
-	}
-
-	/*
-	// Statusbar part widths at screen widths lower than 1600.
-	if (statusBarWidth <= 1600) 
-	{
-		Widths[0] = 304;
-		Widths[1] = sr.right - 256;
+		Widths[1] = sr.right - 300;
 		Widths[2] = 0;
 		Widths[3] = 0;
 		Widths[4] = 0;
-		Widths[5] = -1;
 	}
-	*/
 
-
+	
 	stat.SetMinHeight(32);
 	stat.SetParts(6, Widths);
 	stat.SetSimple(FALSE);
