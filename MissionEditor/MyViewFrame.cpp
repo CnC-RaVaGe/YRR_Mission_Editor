@@ -139,13 +139,19 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 	// Statusbar part widths at screen widths greater than 1920.
 	int Widths[] = {
 		sr.right / 10,
-		Widths[0] * 6 + 48 /*768*/,
-		Widths[0] * 7 - 224 /*1024*/,
-		Widths[0] * 8 - 128 /*1280*/,
-		Widths[0] * 9 - 32 /*1536*/,
-		Widths[0] * 10 -32 /*1792*/,
+		Widths[0] * 6 /*768*/,
+		Widths[0] * 7 /*1024*/,
+		Widths[0] * 8 /*1280*/,
+		Widths[0] * 9 /*1536*/,
+		Widths[0] * 10 /*1792*/,
 		-1
 	};
+
+	Widths[0] += 48;
+	Widths[1] -= 224;
+	Widths[2] -= 128;
+	Widths[3] -= 32;
+	Widths[4] -= 32;
 
 	int i;
 	int statusBarWidth = 0;
@@ -154,6 +160,7 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 		Widths[i] += statusBarWidth;
 	}
 
+	
 	// Statusbar part widths at screen widths lower than 1920.
 	if (statusBarWidth < 1920)
 	{

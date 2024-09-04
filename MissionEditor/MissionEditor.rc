@@ -666,6 +666,7 @@ BEGIN
     LTEXT           "Loading Files...",IDC_CAP,41,6,124,10
     CONTROL         "",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,7,19,221,13
     CTEXT           "VERSION:",IDC_VERSION,164,6,62,10,SS_CENTERIMAGE,WS_EX_RIGHT
+    CTEXT           "",IDC_BUILTBY,74,52,154,13
     LTEXT           "© 1999-2024 ELECTRONIC ARTS INC.  ALL RIGHTS RESERVED\nWestwood Studios(tm) is an Electronic Arts(tm) brand.\n\nCreated by Matthias Wagner, modified for YR Redux by M.Veskilt\nThis software comes with no warranty.",IDC_STATIC,8,39,221,43
     CONTROL         "STATUS:",IDC_STATIC,"Static",SS_SIMPLE | WS_GROUP,8,6,35,10
 END
@@ -1267,6 +1268,7 @@ BEGIN
     LTEXT           "Loading Files...",IDC_CAP,41,6,124,10
     CONTROL         "",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,7,19,221,13
     RTEXT           "VERSION:",IDC_VERSION,164,6,62,10
+    CTEXT           "",IDC_BUILTBY,74,52,154,13
     LTEXT           "© 1999-2024 ELECTRONIC ARTS INC.  ALL RIGHTS RESERVED\nWestwood Studios(tm) is an Electronic Arts(tm) brand.\n\nCreated by Matthias Wagner, modified for YR Redux by M.Veskilt\nThis software comes with no warranty.",IDC_STATIC,8,39,219,43
 END
 #endif
