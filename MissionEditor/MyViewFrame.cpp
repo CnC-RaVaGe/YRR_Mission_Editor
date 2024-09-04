@@ -132,21 +132,52 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 	CFrameWnd::OnSize(nType, cx, cy);
 	CStatusBarCtrl& stat=m_statbar.GetStatusBarCtrl();
 	
-	//m_statbar.ShowWindow(SW_SHOW);
+	m_statbar.ShowWindow(SW_SHOW);
 	CRect sr;
 	GetWindowRect(sr);
-	int Widths[]={
+
+	// Statusbar part widths at screen widths greater than 1920.
+	int Widths[] = {
 		sr.right / 10,
-		Widths[0] * 3,
-		Widths[0] * 3,
-		Widths[0] * 4,
-		Widths[0] * 5,
-		Widths[0] * 6,
-		- 1
+		Widths[0] * 6 + 48 /*768*/,
+		Widths[0] * 7 - 224 /*1024*/,
+		Widths[0] * 8 - 128 /*1280*/,
+		Widths[0] * 9 - 32 /*1536*/,
+		Widths[0] * 10 -32 /*1792*/,
+		-1
 	};
 
-	Widths[0] += 32;
-	Widths[1] += 32;
+	int i;
+	int statusBarWidth = 0;
+	for (i = 0; i < sizeof(Widths) / sizeof(int); i++)
+	{
+		Widths[i] += statusBarWidth;
+	}
+
+	// Statusbar part widths at screen widths lower than 1920.
+	if (statusBarWidth < 1920)
+	{
+		Widths[0] = 304;
+		Widths[1] -= 192;
+		Widths[2] -= 192;
+		Widths[3] -= 192;
+		Widths[4] -= 192;
+		Widths[5] = -1;
+	}
+
+	/*
+	// Statusbar part widths at screen widths lower than 1600.
+	if (statusBarWidth <= 1600) 
+	{
+		Widths[0] = 304;
+		Widths[1] = sr.right - 256;
+		Widths[2] = 0;
+		Widths[3] = 0;
+		Widths[4] = 0;
+		Widths[5] = -1;
+	}
+	*/
+
 
 	stat.SetMinHeight(32);
 	stat.SetParts(6, Widths);
@@ -154,7 +185,7 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 	m_statbar.ShowWindow(SW_SHOW);	
 
 	// YR Redux: Statusbar
-	// TODO: money on map, coordinates, terrain type, height, overlay, overlay data. 
+	// TODO: coordinates, object data, terrain type, overlay, overlay data, money on map. 
 }
 
 void CMyViewFrame::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI) 

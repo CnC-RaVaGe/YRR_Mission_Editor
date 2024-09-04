@@ -4191,18 +4191,6 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	char c[50];
 	CString statusbar;
 
-	// YR Redux: show money on map in the statusbar.
-	CString MoneyStat;
-	MoneyStat = "  Money On Map: ";
-	int money;
-	money = Map->GetMoneyOnMap();
-	itoa(money, c, 10);
-	MoneyStat += c;
-
-	CStatusBarCtrl& mos = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	mos.SetText(MoneyStat, 5, 0);
-
-
 	// display currently selected cell X,Y,Z coordinates in the statusbar.
 	CString CoordStat;
 	CoordStat = " Current Position: X";
@@ -4219,84 +4207,12 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	cos.SetText(CoordStat, 0, 0);
 
 
-	// Displays Terrain type under mouse cursor.
-	FIELDDATA m = *Map->GetFielddataAt(x + y * Map->GetIsoSize());
-	if (m.wGround == 0xFFFF) m.wGround = 0;
-
-	CString TerrainStat;
-	if (m.wGround < (*tiledata_count) && m.bSubTile < (*tiledata)[m.wGround].wTileCount)
-	{
-		TerrainStat = " Terrain Type: 0x";
-		char c[50];
-		itoa((*tiledata)[m.wGround].tiles[m.bSubTile].bTerrainType, c, 16);
-		TerrainStat += c;
-	}
-	
-	CStatusBarCtrl& tts = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	tts.SetText(TerrainStat, 2, 0);
-
-
-	// Display overlay type in the statusbar.
-	char ov[50];
-	CString name;
-	CString overlaystat;
-	if (Map->GetOverlayAt(x + y * Map->GetIsoSize()) != 0xFF)
-	{
-		
-		itoa(Map->GetOverlayAt(x + y * Map->GetIsoSize()), ov, 16);
-
-		int i;
-		name = "0x";
-		name += ov;
-		for (i = 0;i < overlay_count;i++)
-		{
-			if (overlay_number[i] == Map->GetOverlayAt(x + y * Map->GetIsoSize()))
-				name += overlay_name[i];
-		}
-	}
-
-	if (name == "")
-	{
-		name = "none";
-	}
-
-	if (name == "0x70" || name == "0x66")
-	{
-		name = "Ore";
-	}
-
-	overlaystat += " Overlay Type: ";
-	overlaystat += TranslateStringACP(name);
-
-	CStatusBarCtrl& ots = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	ots.SetText(overlaystat, 3, 0);
-
-
-	// Display overlay data in the statusbar.
-	char od[50];
-	CString overlaydatastat;
-	if (Map->GetOverlayAt(x + y * Map->GetIsoSize()) != 0xFF)
-	{
-		itoa(Map->GetOverlayDataAt(x + y * Map->GetIsoSize()), od, 16);
-		overlaydatastat += " OverlayData: 0x";
-		overlaydatastat += od;
-	}
-
-	if (overlaydatastat == "")
-	{
-		overlaydatastat += " OverlayData: none";
-	}
-
-	CStatusBarCtrl& ods = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
-	ods.SetText(overlaydatastat, 4, 0);
-
-
 	// Display object data in the statusbar.
 	STDOBJECTDATA sod;
 	sod.type = "";
 
 	CString ObjectStatus;
-	ObjectStatus = " No object selected.";
+	ObjectStatus = " Nothing selected.";
 	int n = Map->GetStructureAt(x + y * Map->GetIsoSize());
 	int on = -1;
 	if (n >= 0)
@@ -4344,8 +4260,124 @@ void CIsoView::UpdateStatusBar(int x, int y)
 		ObjectStatus += c;
 	}
 
+	n = Map->GetCelltagAt(x + y * Map->GetIsoSize());
+	if (n >= 0)
+	{
+		CString type;
+		CString name;
+		DWORD pos;
+		Map->GetCelltagData(n, &type, &pos);
+		CIniFile& ini = Map->GetIniFile();
+		if (ini.sections["Tags"].values.find(type) != ini.sections["Tags"].values.end())
+			name = GetParam(ini.sections["Tags"].values[type], 1);
+
+		ObjectStatus = " ";
+		ObjectStatus += GetLanguageStringACP("CellTagStatus");
+		ObjectStatus += name;
+		ObjectStatus += " (";
+		ObjectStatus += type;
+		ObjectStatus += ")";
+	}
+
+	if (AD.mode == ACTIONMODE_SETTILE)
+	{
+		ObjectStatus = GetLanguageStringACP("TilePlaceStatus");
+	}
+
+	if (AD.mode == ACTIONMODE_COPY)
+	{
+		ObjectStatus = GetLanguageStringACP("CopyHelp");
+	}
+
+	//if (ObjectStatus.GetLength() > 0)
+	//	SetError(statusbar);
+
 	CStatusBarCtrl& ops = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
 	ops.SetText(ObjectStatus, 1, 0);
+
+
+	// Displays Terrain type under mouse cursor.
+	FIELDDATA m = *Map->GetFielddataAt(x + y * Map->GetIsoSize());
+	if (m.wGround == 0xFFFF) m.wGround = 0;
+
+	CString TerrainStat;
+	if (m.wGround < (*tiledata_count) && m.bSubTile < (*tiledata)[m.wGround].wTileCount)
+	{
+		TerrainStat = " Terrain Type: 0x";
+		char c[50];
+		itoa((*tiledata)[m.wGround].tiles[m.bSubTile].bTerrainType, c, 16);
+		TerrainStat += c;
+	}
+	
+	CStatusBarCtrl& tts = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	tts.SetText(TerrainStat, 2, 0);
+
+
+	// Display overlay type in the statusbar.
+	char ov[50];
+	CString name;
+	CString overlaystat;
+	if (Map->GetOverlayAt(x + y * Map->GetIsoSize()) != 0xFF)
+	{
+		
+		//itoa(Map->GetOverlayAt(x + y * Map->GetIsoSize()), ov, 16);
+
+		int i;
+		//name = "0x";
+		//name += ov;
+		for (i = 0;i < overlay_count;i++)
+		{
+			if (overlay_number[i] == Map->GetOverlayAt(x + y * Map->GetIsoSize()))
+				name += overlay_name[i];
+		}
+	}
+
+	if (name == "")
+	{
+		name = "none";
+	}
+
+	if (name == "0x70" || name == "0x66")
+	{
+		name = "Ore";
+	}
+
+	overlaystat += " Overlay Type: ";
+	overlaystat += TranslateStringACP(name);
+
+	CStatusBarCtrl& ots = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	ots.SetText(overlaystat, 3, 0);
+
+
+	// Display overlay data in the statusbar.
+	char od[50];
+	CString overlaydatastat;
+	if (Map->GetOverlayAt(x + y * Map->GetIsoSize()) != 0xFF)
+	{
+		itoa(Map->GetOverlayDataAt(x + y * Map->GetIsoSize()), od, 16);
+		overlaydatastat += " OverlayData: 0x";
+		overlaydatastat += od;
+	}
+
+	if (overlaydatastat == "")
+	{
+		overlaydatastat += " OverlayData: none";
+	}
+
+	CStatusBarCtrl& ods = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	ods.SetText(overlaydatastat, 4, 0);
+
+
+	// YR Redux: show money on map in the statusbar.
+	CString MoneyStat;
+	MoneyStat = "  Money On Map: ";
+	int money;
+	money = Map->GetMoneyOnMap();
+	itoa(money, c, 10);
+	MoneyStat += c;
+
+	CStatusBarCtrl& mos = ((CMyViewFrame*)owner)->m_statbar.GetStatusBarCtrl();
+	mos.SetText(MoneyStat, 5, 0);
 
 	/*
 	// activate this code to display information about the mappack!
@@ -4371,37 +4403,6 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	statusbar+="  ";
 	itoa(td.bMapData2[0],c,10);
 	statusbar+=c;*/
-
-
-	n = Map->GetCelltagAt(x + y * Map->GetIsoSize());
-	if (n >= 0)
-	{
-		CString type;
-		CString name;
-		DWORD pos;
-		Map->GetCelltagData(n, &type, &pos);
-		CIniFile& ini = Map->GetIniFile();
-		if (ini.sections["Tags"].values.find(type) != ini.sections["Tags"].values.end())
-			name = GetParam(ini.sections["Tags"].values[type], 1);
-
-		statusbar += GetLanguageStringACP("CellTagStatus");
-		statusbar += name;
-		statusbar += " (";
-		statusbar += type;
-		statusbar += ")";
-	}
-
-	if (AD.mode == ACTIONMODE_SETTILE)
-	{
-		statusbar = GetLanguageStringACP("TilePlaceStatus");
-	}
-
-	if (AD.mode == ACTIONMODE_COPY)
-		statusbar = GetLanguageStringACP("CopyHelp");
-
-	if (statusbar.GetLength() > 0)
-		SetError(statusbar);
-
 }
 
 
