@@ -63,17 +63,14 @@ END_MESSAGE_MAP()
 BOOL CMyViewFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext) 
 {
 	SIZE z;
-	z.cx=200;
+	z.cx=360; //YR Redux adjusted object browser width.
 	z.cy=200;
 
 	CRect r;
 	r.right=200;
 	r.bottom=200;
 	
-
-
 	if(!m_Splitter.CreateStatic(this,1,2)) return FALSE;
-		
 
 	if(!m_Splitter.CreateView(0,0,
 		RUNTIME_CLASS(CViewObjects),
@@ -96,10 +93,10 @@ BOOL CMyViewFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	// the minimap is not a child window right now, but it is created here though
 	auto miniMapClass = AfxRegisterWndClass(0, m_hArrowCursor, static_cast<HBRUSH>(::GetStockObject(GRAY_BRUSH)));
-    m_minimap.CreateEx(0, miniMapClass, "Minimap", WS_POPUPWINDOW | WS_CAPTION | WS_VISIBLE, r, NULL, 0);
+    m_minimap.CreateEx(0, miniMapClass, "Map", DS_MODALFRAME | DS_CENTER | WS_EX_TOOLWINDOW | WS_OVERLAPPED | WS_CAPTION | WS_CAPTION | WS_VISIBLE, r, NULL, 0);
     //m_minimap.Create(NULL, "Minimap", WS_OVERLAPPED)
 	m_minimap.UpdateView();
-	
+
 	if(!m_statbar.CreateEx(this, SBT_TOOLTIPS)) return FALSE;
 	
 	return CFrameWnd::OnCreateClient(lpcs, pContext);
