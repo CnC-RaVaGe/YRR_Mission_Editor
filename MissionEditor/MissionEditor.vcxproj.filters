@@ -621,6 +621,15 @@
     <Image Include="res\toolbar1.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sbicon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sbicon2.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Res\uqeue.wav">

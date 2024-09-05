@@ -3851,6 +3851,35 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 
+/////////////////////////////////////////////////////////////////////////////
+// English (United Kingdom) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+SB_ICON1                ICON                    "res\\sbicon1.ico"
+
+SB_ICON2                ICON                    "res\\sbicon2.ico"
+
+SB_ICON3                ICON                    "res\\sbicon3.ico"
+
+SB_ICON4                ICON                    "res\\sbicon4.ico"
+
+SB_ICON5                ICON                    "res\\sbicon5.ico"
+
+SB_ICON6                ICON                    "res\\sbicon6.ico"
+
+#endif    // English (United Kingdom) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

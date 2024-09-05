@@ -96,6 +96,13 @@
 #define IDD_USERSCRIPTS                 288
 #define IDD_COMBO_UINPUT                289
 #define IDC_EDITOR_ARROW                299
+#define SB_ICON1                        302
+#define SB_ICON2                        303
+#define SB_ICON3                        304
+#define SB_ICON4                        305
+#define SB_ICON5                        306
+#define IDI_ICON4                       307
+#define SB_ICON6                        307
 #define IDC_BULB                        1000
 #define IDC_STARTUP                     1001
 #define IDC_NEXTTIP                     1002
@@ -614,7 +621,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        302
+#define _APS_NEXT_RESOURCE_VALUE        308
 #define _APS_NEXT_COMMAND_VALUE         40172
 #define _APS_NEXT_CONTROL_VALUE         1464
 #define _APS_NEXT_SYMED_VALUE           111

@@ -100,7 +100,7 @@ BOOL CMyViewFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
     //m_minimap.Create(NULL, "Minimap", WS_OVERLAPPED)
 	m_minimap.UpdateView();
 	
-	if(!m_statbar.CreateEx(this,SBARS_SIZEGRIP | SBT_TOOLTIPS)) return FALSE;
+	if(!m_statbar.CreateEx(this, SBT_TOOLTIPS)) return FALSE;
 	
 	return CFrameWnd::OnCreateClient(lpcs, pContext);
 }
@@ -131,6 +131,14 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 
 	CFrameWnd::OnSize(nType, cx, cy);
 	CStatusBarCtrl& stat=m_statbar.GetStatusBarCtrl();
+
+	// Statusbar Icons
+	HICON i_position = AfxGetApp()->LoadIcon(SB_ICON1);
+	HICON i_selection = AfxGetApp()->LoadIcon(SB_ICON2);
+	HICON i_terrain = AfxGetApp()->LoadIcon(SB_ICON3);
+	HICON i_overlay = AfxGetApp()->LoadIcon(SB_ICON4);
+	HICON i_overlaydata = AfxGetApp()->LoadIcon(SB_ICON5);
+	HICON i_money = AfxGetApp()->LoadIcon(SB_ICON6);
 	
 	m_statbar.ShowWindow(SW_SHOW);
 	CRect sr;
@@ -138,8 +146,7 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 
 	int SegmentWidth = sr.right / 8;
 
-	// Statusbar part widths.
-	//TODO: Add if statements to check sr.right value for screen width and set widths for responsive hiding of fields.
+	// Statusbar item (part) widths.
 	int Widths[6] = {
 		308,
 		sr.right - (SegmentWidth * 4),
@@ -149,6 +156,7 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 		-1
 	};
 
+	// Item widths when screen width is below 1920 pixels.
 	if (sr.right <= 1920)
 	{
 		Widths[1] = sr.right - (SegmentWidth * 4.5);
@@ -156,6 +164,7 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 		Widths[3] = sr.right - (SegmentWidth * 3);
 	} 
 
+	// Item widths when screen width is below 1600 pixels.
 	if (sr.right <= 1600)
 	{
 		Widths[1] = sr.right - 300;
@@ -163,15 +172,19 @@ void CMyViewFrame::OnSize(UINT nType, int cx, int cy)
 		Widths[3] = 0;
 		Widths[4] = 0;
 	}
-
 	
 	stat.SetMinHeight(32);
 	stat.SetParts(6, Widths);
+
+	stat.SetIcon(0, i_position);
+	stat.SetIcon(1, i_selection);
+	stat.SetIcon(2, i_terrain);
+	stat.SetIcon(3, i_overlay);
+	stat.SetIcon(4, i_overlaydata);
+	stat.SetIcon(5, i_money);
+
 	stat.SetSimple(FALSE);
 	m_statbar.ShowWindow(SW_SHOW);	
-
-	// YR Redux: Statusbar
-	// TODO: coordinates, object data, terrain type, overlay, overlay data, money on map. 
 }
 
 void CMyViewFrame::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI) 

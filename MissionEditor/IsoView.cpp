@@ -84,7 +84,7 @@ BOOL bDoNotAllowScroll = FALSE;
 IMPLEMENT_DYNCREATE(CIsoView, CScrollView)
 
 BOOL bNoThreadDraw = FALSE;
-BOOL bDrawStats = TRUE;
+BOOL bDrawStats = FALSE; //TRUE YR Redux: Changed.
 
 /*UINT PaintThreadProc( LPVOID pParam )
 {
@@ -4193,7 +4193,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 
 	// display currently selected cell X,Y,Z coordinates in the statusbar.
 	CString CoordStat;
-	CoordStat = " Current Position: X";
+	CoordStat = "Position: X";
 	itoa(x, c, 10);
 	CoordStat += c;
 	CoordStat += ", Y";
@@ -4212,13 +4212,13 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	sod.type = "";
 
 	CString ObjectStatus;
-	ObjectStatus = " Nothing selected.";
+	ObjectStatus = "Nothing selected.";
 	int n = Map->GetStructureAt(x + y * Map->GetIsoSize());
 	int on = -1;
 	if (n >= 0)
 	{
 		Map->GetStdStructureData(n, &sod);
-		ObjectStatus = " " + GetLanguageStringACP("StructStatus");
+		ObjectStatus = GetLanguageStringACP("StructStatus");
 		on = n;
 	}
 
@@ -4226,7 +4226,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	if (n >= 0)
 	{
 		Map->GetStdUnitData(n, &sod);
-		ObjectStatus = " " + GetLanguageStringACP("UnitStatus");
+		ObjectStatus = GetLanguageStringACP("UnitStatus");
 		on = n;
 
 	}
@@ -4235,7 +4235,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	if (n >= 0)
 	{
 		Map->GetStdAircraftData(n, &sod);
-		ObjectStatus = " " + GetLanguageStringACP("AirStatus");
+		ObjectStatus = GetLanguageStringACP("AirStatus");
 		on = n;
 	}
 
@@ -4243,7 +4243,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	if (n >= 0)
 	{
 		Map->GetStdInfantryData(n, &sod);
-		ObjectStatus = " " + GetLanguageStringACP("InfStatus");
+		ObjectStatus = GetLanguageStringACP("InfStatus");
 		on = n;
 	}
 
@@ -4355,7 +4355,7 @@ void CIsoView::UpdateStatusBar(int x, int y)
 	if (Map->GetOverlayAt(x + y * Map->GetIsoSize()) != 0xFF)
 	{
 		itoa(Map->GetOverlayDataAt(x + y * Map->GetIsoSize()), od, 16);
-		overlaydatastat += " OverlayData: 0x";
+		overlaydatastat += " Overlay Data: 0x";
 		overlaydatastat += od;
 	}
 
@@ -6604,6 +6604,7 @@ void CIsoView::DrawMap()
 
 	auto renderDuration = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - startTime); // not including text output, ReleaseDC, waitForVerticalBlank etc below
 
+	/*
 	if (bDrawStats)
 	{
 		if (theApp.m_Options.bShowStats)
@@ -6615,12 +6616,14 @@ void CIsoView::DrawMap()
 		auto moneyStr = std::format("Credits on map: {0}", Map->GetMoneyOnMap());
 		m_texts_to_render.push_back({ moneyStr.c_str(), r.left + 10, r.top + 10, RGB(0,0,0), true });
 	}
+	
 
 	if (rscroll)
 	{
 		const auto& sc = pics["SCROLLCURSOR"];
 		Blit((LPDIRECTDRAWSURFACE4)sc.pic, rclick_x * m_viewScale.x + r.left - sc.wWidth / 2, rclick_y * m_viewScale.y + r.top - sc.wHeight / 2);
 	}
+	*/
 
 	BlitBackbufferToHighRes(); // lpdsBackHighRes contains the same graphic, but scaled to the whole window
 		
