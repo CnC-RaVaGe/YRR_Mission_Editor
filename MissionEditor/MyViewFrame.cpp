@@ -93,8 +93,7 @@ BOOL CMyViewFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	// the minimap is not a child window right now, but it is created here though
 	auto miniMapClass = AfxRegisterWndClass(0, m_hArrowCursor, static_cast<HBRUSH>(::GetStockObject(GRAY_BRUSH)));
-    m_minimap.CreateEx(0, miniMapClass, "Map", DS_MODALFRAME | DS_CENTER | WS_EX_TOOLWINDOW | WS_OVERLAPPED | WS_CAPTION | WS_CAPTION | WS_VISIBLE, r, NULL, 0);
-    //m_minimap.Create(NULL, "Minimap", WS_OVERLAPPED)
+    m_minimap.CreateEx(0, miniMapClass, "Map", WS_POPUP | WS_BORDER | WS_VISIBLE, r, NULL, 0);
 	m_minimap.UpdateView();
 
 	if(!m_statbar.CreateEx(this, SBT_TOOLTIPS)) return FALSE;

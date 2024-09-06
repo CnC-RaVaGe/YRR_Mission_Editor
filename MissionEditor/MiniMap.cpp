@@ -89,7 +89,7 @@ void CMiniMap::OnDraw(CDC* pDC)
 	int mapwidth=Map->GetWidth();
 	int mapheight=Map->GetHeight();
 
-	
+	// TODO: Adjust the current position rectangle.
 	// Get iso view display rectangle
 	RECT cr;
 	isoview.GetClientRect(&cr);
@@ -109,7 +109,7 @@ void CMiniMap::OnDraw(CDC* pDC)
 	selRect.bottom = bottom * m_scale;
 
 
-	pDC->Draw3dRect(&selRect, RGB(200,0,0), RGB(120,0,0));
+	pDC->Draw3dRect(&selRect, RGB(255,0,0), RGB(255,0,0));
 	
 }
 
@@ -135,7 +135,7 @@ BOOL CMiniMap::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// MW 07/17/2001: Style changed
 
-	cs.style = WS_CAPTION | WS_OVERLAPPED | WS_SYSMENU;// | WS_CHILD;
+	cs.style = WS_POPUP | WS_BORDER; // | WS_CHILD;
 	cs.cx=0;
 	cs.cy=0;
 	
@@ -144,16 +144,16 @@ BOOL CMiniMap::PreCreateWindow(CREATESTRUCT& cs)
 	RECT r;
 	dlg.GetWindowRect(&r);
 	
-	cs.x=0;//r.right-250 ;
-	cs.y=r.bottom-250;
-	if(cs.y<0) cs.y=0;
-	//cs.dwExStyle=WS_EX_TOOLWINDOW;
-	//cs.dwExStyle=WS_EX_PALETTEWINDOW;
+	// YR Redux: changed starting position of the minimap.
+	cs.x = r.right;
+	cs.y = r.top;
+	if(cs.y<0) cs.y = 0;
+	cs.dwExStyle= WS_EX_PALETTEWINDOW;
 	
 	// this here will cause an assert in debug mode, ignore it (window must be a child window)
-	int res=CWnd::PreCreateWindow(cs);
+	int res= CWnd::PreCreateWindow(cs); //CDialogEx
 
-	cs.style=WS_POPUPWINDOW | WS_CAPTION /*| WS_DLGFRAME */ | WS_THICKFRAME | WS_OVERLAPPED | DS_3DLOOK | WS_MINIMIZEBOX; //WS_CAPTION | WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX;
+	cs.style = WS_POPUP | WS_BORDER;  // WS_CAPTION | WS_BORDER | WS_OVERLAPPED /*| DS_3DLOOK | WS_MINIMIZEBOX*/; //WS_CAPTION | WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX;
 
 	return res;
 	
@@ -174,13 +174,19 @@ void CMiniMap::UpdateView()
 		int axissizex=Map->GetWidth()*2;
 		int axissizey=Map->GetHeight();
 
-		SetIcon(theApp.m_pMainWnd->GetIcon(FALSE), FALSE);
-		SetIcon(theApp.m_pMainWnd->GetIcon(TRUE), TRUE);
-		SetWindowPos(&wndTopMost, r.left, r.top, axissizex * m_scale + 2 * (GetSystemMetrics(SM_CXFIXEDFRAME)), axissizey * m_scale + 2 * GetSystemMetrics(SM_CYFIXEDFRAME) + GetSystemMetrics(SM_CYCAPTION), SWP_SHOWWINDOW);
+		// YR Redux: removed the icon call as the new window style does not display an icon.
+		//SetIcon(theApp.m_pMainWnd->GetIcon(FALSE), FALSE);
+		//SetIcon(theApp.m_pMainWnd->GetIcon(TRUE), TRUE);
+		
+		// YR Redux: set map window to draw from right instead of left to keep position.	
+		// TODO: Update minimap position when main window is resized or moved.
+		CFinalSunDlg& dlg = *(CFinalSunDlg*)theApp.GetMainWnd();
+		RECT mr;
+		dlg.GetWindowRect(&mr);
+
+		SetWindowPos(&wndTopMost, mr.right - (axissizex * 2 + 52), mr.top + 133, (axissizex * m_scale) + (2 * (GetSystemMetrics(SM_CXFIXEDFRAME))), (axissizey * m_scale) + (2 * GetSystemMetrics(SM_CYFIXEDFRAME)) + GetSystemMetrics(SM_CYCAPTION), SWP_SHOWWINDOW);
 		RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 	}
-
-	
 }
 
 
