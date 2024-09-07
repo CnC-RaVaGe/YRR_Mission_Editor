@@ -191,7 +191,6 @@ CIsoView::CIsoView()
 	updateFontScaled();
 	//m_paintthread=new(CIsoPaintThread);
 	//m_paintthread->CreateThread();
-
 }
 
 CIsoView::~CIsoView()
@@ -1947,6 +1946,7 @@ void CIsoView::DrawCellCursor(const MapCoords& mapCoords, const DDSURFACEDESC2& 
 	ProjectedCoords drawCoords2d = GetRenderTargetCoordinates(mapCoords, 0) + drawOffset;
 	ProjectedCoords drawCoords = GetRenderTargetCoordinates(mapCoords) + drawOffset;
 
+	// Map view cell selection mouse cursor colours.
 	static const COLORREF _cell_hilight_colors[16] = { 
 		RGB(255, 255, 255),	// level 0
 		RGB( 170, 0, 170),	// level 1
@@ -2125,11 +2125,6 @@ BOOL CIsoView::OnCommand(WPARAM wParam, LPARAM lParam)
 
 		return 0;
 	}
-
-
-
-
-
 	return CView::OnCommand(wParam, lParam);
 }
 
@@ -2454,8 +2449,6 @@ void CIsoView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	else if (AD.mode == ACTIONMODE_SETTILE)
 	{
-
-
 		if ((nFlags & MK_CONTROL) && !(nFlags & MK_SHIFT))
 		{
 			// Fill the whole area
@@ -5348,6 +5341,7 @@ void CIsoView::FillArea(DWORD dwX, DWORD dwY, DWORD dwID, BYTE bSubTile)
 	f->bSubTile = bSubTile;
 }
 
+// Height Level tool
 void CIsoView::AutoLevel()
 {
 	Map->TakeSnapshot();
@@ -5679,7 +5673,7 @@ void CIsoView::DrawMap()
 	DDBLTFX fx;
 	memset(&fx, 0, sizeof(DDBLTFX));
 	fx.dwSize = sizeof(DDBLTFX);
-	fx.dwFillColor = RGB(255, 255, 255);
+	fx.dwFillColor = RGB(50, 50, 50);
 	lpdsBack->Blt(NULL, NULL, NULL, DDBLT_COLORFILL, &fx);
 
 
@@ -6635,6 +6629,7 @@ void CIsoView::DrawMap()
 
 }
 
+// Draw map bounds lines for map edge and visible area.
 void CIsoView::RenderUIOverlay()
 {
 	if (!m_textDefault)
@@ -6683,23 +6678,45 @@ void CIsoView::RenderUIOverlay()
 
 	RECT ls;
 	Map->GetLocalSize(&ls);
+
+	// Map bounds offsets
 	ProjectedCoords l_lt(
 		ll + ls.left * f_x - f_x / 2,
 		lt + (ls.top - 4) * f_y
 	);
+
+	// Map playable area offsets
+	ProjectedCoords l_tt(
+		ll + ls.left * f_x - f_x / 2,
+		lt + (ls.top - 1) * f_y
+	);
+
+	// Map visible area offsets
 	ProjectedCoords l_br(
 		ll + ls.left * f_x + ls.right * f_x - f_x / 2,
 		lt + (ls.top - 4 + 4) * f_y + ls.bottom * f_y
 	);
+
 	auto ls_lt = useHighRes ? ScaleBackToFrontBuffer(l_lt) : l_lt;
 	auto ls_br = useHighRes ? ScaleBackToFrontBuffer(l_br) : l_br;
 
-	auto red = m_color_converter->GetColor(255, 0, 0);
-	auto blue = m_color_converter->GetColor(0, 0, 255);
-	d.Rectangle(sllt.x, sllt.y, slbr.x, slbr.y, red);
-	d.Rectangle(sllt.x-1, sllt.y-1, slbr.x+1, slbr.y+1, red);
-	d.Rectangle(ls_lt.x, ls_lt.y, ls_br.x, ls_br.y, blue);
-	d.Rectangle(ls_lt.x+1, ls_lt.y+1, ls_br.x-1, ls_br.y-1, blue);
+	// YR Redux: Changed map bound line colours
+	auto visiblearea = m_color_converter->GetColor(0, 255, 0);
+	auto playablearea = m_color_converter->GetColor(0, 225, 0);
+	auto mapbounds = m_color_converter->GetColor(0, 0, 0);
+
+	// Map bounds
+	d.Rectangle(sllt.x, sllt.y, slbr.x, slbr.y, mapbounds);
+	d.Rectangle(sllt.x-1, sllt.y-1, slbr.x+1, slbr.y+1, mapbounds);
+
+	// YR Redux: Added map playable area
+	d.Rectangle(l_tt.x, l_tt.y, ls_br.x, ls_br.y, playablearea);
+	d.Rectangle(ls_lt.x + 1, ls_lt.y + 1, ls_br.x - 1, ls_br.y - 1, playablearea);
+
+	// Map visible area
+	d.Rectangle(ls_lt.x, ls_lt.y, ls_br.x, ls_br.y, visiblearea);
+	d.Rectangle(ls_lt.x+1, ls_lt.y+1, ls_br.x-1, ls_br.y-1, visiblearea);
+
 
 	dds->Unlock(NULL);
 	

@@ -148,10 +148,11 @@ BOOL CMiniMap::PreCreateWindow(CREATESTRUCT& cs)
 	cs.x = r.right;
 	cs.y = r.top;
 	if(cs.y<0) cs.y = 0;
-	cs.dwExStyle= WS_EX_PALETTEWINDOW;
+	cs.dwExStyle=WS_EX_PALETTEWINDOW;
 	
 	// this here will cause an assert in debug mode, ignore it (window must be a child window)
 	int res= CWnd::PreCreateWindow(cs); //CDialogEx
+	//cs.SetParent(cs, dlg)
 
 	cs.style = WS_POPUP | WS_BORDER;  // WS_CAPTION | WS_BORDER | WS_OVERLAPPED /*| DS_3DLOOK | WS_MINIMIZEBOX*/; //WS_CAPTION | WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX;
 
@@ -183,6 +184,24 @@ void CMiniMap::UpdateView()
 		CFinalSunDlg& dlg = *(CFinalSunDlg*)theApp.GetMainWnd();
 		RECT mr;
 		dlg.GetWindowRect(&mr);
+
+		/*
+		// Store main window dimensions at minimap creation
+		int firstrun;
+		firstrun = 1;
+
+		if (firstrun = 1)
+		{
+			wndstartright = mr.right;
+			wndstartleft = mr.bottom;
+			firstrun = 0;
+			SetWindowPos(&wndTopMost, mr.right - (axissizex * 2 + 52), mr.top + 133, (axissizex * m_scale) + (2 * (GetSystemMetrics(SM_CXFIXEDFRAME))), (axissizey * m_scale) + (2 * GetSystemMetrics(SM_CYFIXEDFRAME)) + GetSystemMetrics(SM_CYCAPTION), SWP_SHOWWINDOW);
+		} 
+		else // Change minimap position on window dimension change.
+		{
+			SetWindowPos(&wndTopMost, mr.right - (axissizex * 2 + 52), mr.top + 133, (axissizex * m_scale) + (2 * (GetSystemMetrics(SM_CXFIXEDFRAME))), (axissizey * m_scale) + (2 * GetSystemMetrics(SM_CYFIXEDFRAME)) + GetSystemMetrics(SM_CYCAPTION), SWP_SHOWWINDOW);
+		}
+		*/
 
 		SetWindowPos(&wndTopMost, mr.right - (axissizex * 2 + 52), mr.top + 133, (axissizex * m_scale) + (2 * (GetSystemMetrics(SM_CXFIXEDFRAME))), (axissizey * m_scale) + (2 * GetSystemMetrics(SM_CYFIXEDFRAME)) + GetSystemMetrics(SM_CYCAPTION), SWP_SHOWWINDOW);
 		RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);

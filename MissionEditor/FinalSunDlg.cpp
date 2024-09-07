@@ -447,9 +447,7 @@ void CFinalSunDlg::OnPaint()
 	else
 	{
 		CDialog::OnPaint();
-	}
-
-	
+	}	
 }
 
 HCURSOR CFinalSunDlg::OnQueryDragIcon()
@@ -683,8 +681,6 @@ void CFinalSunDlg::UpdateDialogs(BOOL bOnlyMissionControl, BOOL bNoRepos)
 		UpdateWindow();
 		UpdateStrings();
 
-
-
 		m_view.m_isoview->UpdateDialog(!bNoRepos);
 		m_view.m_objectview->UpdateDialog();
 		m_view.m_minimap.UpdateView();
@@ -822,9 +818,7 @@ void CFinalSunDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	m_view.ShowWindow(SW_SHOW);
 
 	if(!bShow) return;
-	
-	
-	
+		
 }
 
 
@@ -2392,11 +2386,26 @@ void CFinalSunDlg::OnEditSingleplayersettings()
 	}	
 }
 
+/*
+//TODO : Fix minimap position when main window moves.
+void CFinalSunDlg::OnWindowPosChanging(WINDOWPOS* lpwndpos)
+{
+	CDialog::OnWindowPosChanging(lpwndpos);
+
+	if (lpwndpos > lpwndpos || lpwndpos < lpwndpos)
+	{
+		// YR Redux: set minimap to update position.
+		m_view.m_minimap.UpdateView();
+	}
+}
+*/
+
 void CFinalSunDlg::OnSizing(UINT fwSide, LPRECT pRect) 
 {
 	CDialog::OnSizing(fwSide, pRect);
 
-		
+	// YR Redux: update minimap position when main window is resized.
+	m_view.m_minimap.UpdateView();
 }
 
 void CFinalSunDlg::OnSize(UINT nType, int cx, int cy) 
@@ -2677,6 +2686,9 @@ void CFinalSunDlg::RecalcLayout()
 	m_bar.SetWindowPos(NULL, 0,0, rr.right, rr.bottom, SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 	m_bar.ShowBand(0, TRUE);
 	m_bar.ShowBand(1, TRUE);
+
+	// YR Redux: set minimap to update position.
+	m_view.m_minimap.UpdateView();
 }
 
 BOOL CFinalSunDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult) 

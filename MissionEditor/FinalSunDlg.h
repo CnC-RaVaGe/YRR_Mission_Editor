@@ -148,6 +148,7 @@ protected:
 	afx_msg void OnEnterIdle(UINT nWhy, CWnd* pWho);
 	afx_msg void OnEditBasicsettings();
 	afx_msg void OnEditSingleplayersettings();
+	afx_msg void OnWindowPosChanging();
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnEditHouses();

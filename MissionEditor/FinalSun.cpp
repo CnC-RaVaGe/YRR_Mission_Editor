@@ -455,9 +455,6 @@ BOOL CFinalSunApp::ProcessMessageFilter(int code, LPMSG lpMsg)
 		}
 
 
-
-
-
 		if (AD.mode == ACTIONMODE_SETTILE)
 		{
 			CIsoView* v = ((CFinalSunDlg*)theApp.m_pMainWnd)->m_view.m_isoview;

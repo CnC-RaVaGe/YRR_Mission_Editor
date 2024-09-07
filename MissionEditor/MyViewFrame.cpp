@@ -57,17 +57,34 @@ BEGIN_MESSAGE_MAP(CMyViewFrame, CFrameWnd)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// Behandlungsroutinen für Nachrichten CMyViewFrame 
 
+// Creates the object browser view on the left and the tile browser view at the bottom.
 BOOL CMyViewFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext) 
 {
 	SIZE z;
 	z.cx=360; //YR Redux adjusted object browser width.
 	z.cy=200;
 
+	// TEMP: Trying to resize TileBrowser view.
+	/*
+	CIsoView* v = ((CFinalSunDlg*)theApp.m_pMainWnd)->m_view.m_isoview;
+	CTerrainDlg& tdlg = ((CFinalSunDlg*)theApp.m_pMainWnd)->m_view.m_browser->m_bar;
+	WORD isox, isoy;
+	RECT r;
+	POINT p;
+	v->GetWindowRect(&r);
+	GetCursorPos(&p);
+	isox = p.x - r.left;
+	isoy = p.y - r.top;
+	*/
+
+	// TEMP: Trying to resize TileBrowser view.
+	SIZE t;
+	t.cx = 200;
+	t.cy = 500;
+
 	CRect r;
-	r.right=200;
+	r.right=360;
 	r.bottom=200;
 	
 	if(!m_Splitter.CreateStatic(this,1,2)) return FALSE;
@@ -79,16 +96,21 @@ BOOL CMyViewFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	if(!m_Splitter.CreateView(0,1,
 		RUNTIME_CLASS(CRightFrame),
-		z,
+		t,
 		pContext)) return FALSE;
 
 	OutputDebugString("CMyViewFrame::OnCreateClient(): windows created\n");
 
 	m_rightFrame=(CRightFrame*)m_Splitter.GetPane(0,1);
 	
+	// Map editing view
 	m_isoview=(CIsoView*)m_rightFrame->m_Splitter.GetPane(0,0);
 	m_isoview->owner=this;
+
+	// Tileset browser view
 	m_browser=(CTileSetBrowserFrame*)m_rightFrame->m_Splitter.GetPane(1,0);
+
+	// Object browser view
 	m_objectview=(CViewObjects*)m_Splitter.GetPane(0,0);
 
 	// the minimap is not a child window right now, but it is created here though
@@ -100,6 +122,7 @@ BOOL CMyViewFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	
 	return CFrameWnd::OnCreateClient(lpcs, pContext);
 }
+
 
 void CMyViewFrame::OnSysCommand(UINT nID, LPARAM lParam) 
 {
