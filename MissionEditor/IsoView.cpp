@@ -6701,21 +6701,26 @@ void CIsoView::RenderUIOverlay()
 	auto ls_br = useHighRes ? ScaleBackToFrontBuffer(l_br) : l_br;
 
 	// YR Redux: Changed map bound line colours
-	auto visiblearea = m_color_converter->GetColor(0, 255, 0);
-	auto playablearea = m_color_converter->GetColor(0, 225, 0);
-	auto mapbounds = m_color_converter->GetColor(0, 0, 0);
+	auto blue = m_color_converter->GetColor(21, 101, 192);
+	auto gray = m_color_converter->GetColor(158, 158, 158);
+	auto black = m_color_converter->GetColor(0, 0, 0);
 
 	// Map bounds
-	d.Rectangle(sllt.x, sllt.y, slbr.x, slbr.y, mapbounds);
-	d.Rectangle(sllt.x-1, sllt.y-1, slbr.x+1, slbr.y+1, mapbounds);
+	d.Rectangle(sllt.x, sllt.y-2, slbr.x, slbr.y, black);
+	d.Rectangle(sllt.x-1, sllt.y-3, slbr.x-1, slbr.y+1, black);
+	d.Rectangle(sllt.x+1, sllt.y-4, slbr.x+1, slbr.y+2, black);
+	d.Rectangle(sllt.x+2, sllt.y-5, slbr.x-2, slbr.y+3, black);
 
 	// YR Redux: Added map playable area
-	d.Rectangle(l_tt.x, l_tt.y, ls_br.x, ls_br.y, playablearea);
-	d.Rectangle(ls_lt.x + 1, ls_lt.y + 1, ls_br.x - 1, ls_br.y - 1, playablearea);
+	d.Rectangle(l_tt.x, l_tt.y - 2, ls_br.x, ls_br.y - 1, gray);
+	d.Rectangle(l_tt.x, l_tt.y - 1, ls_br.x, ls_br.y - 1, gray);
+	d.Rectangle(l_tt.x, l_tt.y, ls_br.x, ls_br.y - 1, gray);
 
 	// Map visible area
-	d.Rectangle(ls_lt.x, ls_lt.y, ls_br.x, ls_br.y, visiblearea);
-	d.Rectangle(ls_lt.x+1, ls_lt.y+1, ls_br.x-1, ls_br.y-1, visiblearea);
+	d.Rectangle(ls_lt.x-1, ls_lt.y+1, ls_br.x-2, ls_br.y-1, blue);
+	d.Rectangle(ls_lt.x+2, ls_lt.y, ls_br.x+1, ls_br.y-2, blue);
+	d.Rectangle(ls_lt.x, ls_lt.y-1, ls_br.x, ls_br.y-3, blue);
+	d.Rectangle(ls_lt.x+1, ls_lt.y, ls_br.x-1, ls_br.y-4, blue);
 
 
 	dds->Unlock(NULL);
