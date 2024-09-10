@@ -222,6 +222,11 @@ BEGIN_MESSAGE_MAP(CFinalSunDlg, CDialog)
 	ON_COMMAND(ID_FILE_FILE2, OnFileFile2)
 	ON_COMMAND(ID_FILE_FILE3, OnFileFile3)
 	ON_COMMAND(ID_FILE_FILE4, OnFileFile4)
+	ON_COMMAND(ID_FILE_FILE5, OnFileFile5)
+	ON_COMMAND(ID_FILE_FILE6, OnFileFile6)
+	ON_COMMAND(ID_FILE_FILE7, OnFileFile7)
+	ON_COMMAND(ID_FILE_FILE8, OnFileFile8)
+	ON_COMMAND(ID_FILE_FILE9, OnFileFile9)
 	ON_COMMAND(ID_MAPTOOLS_SEARCHWAYPOINT, OnMaptoolsSearchwaypoint)
 	ON_COMMAND(ID_MAPTOOLS_TOOLSCRIPTS, OnMaptoolsToolscripts)
 	//}}AFX_MSG_MAP
@@ -2106,8 +2111,10 @@ void CFinalSunDlg::UpdateStrings()
 
 	
 	// MW 07/20/01: Show prev. opened files
+	// YR Redux: Increased recent file list from 4 to 10.
 	int prev_maps_count=0;
-	for(i=0;i<4;i++)
+
+	for(i=0; i< (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)); i++)
 	{
 		if(theApp.m_Options.prev_maps[i].GetLength()>0)
 		{
@@ -2121,10 +2128,17 @@ void CFinalSunDlg::UpdateStrings()
 			else if(i==1) id=ID_FILE_FILE2;
 			else if(i==2) id=ID_FILE_FILE3;
 			else if(i==3) id=ID_FILE_FILE4;
+			else if(i==4) id=ID_FILE_FILE4;
+			else if(i==5) id=ID_FILE_FILE5;
+			else if(i==6) id=ID_FILE_FILE6;
+			else if(i==7) id=ID_FILE_FILE7;
+			else if(i==8) id=ID_FILE_FILE8;
+			else if(i==9) id=ID_FILE_FILE9;
 				
 			my_menu->GetSubMenu(0)->InsertMenu(10+prev_maps_count, MF_BYPOSITION | MF_STRING, id, str);
 		}
 	}
+
 
 
 #ifdef RA2_MODE
@@ -3816,37 +3830,63 @@ void CFinalSunDlg::OnOptionsShowbuildingoutline()
 }
 
 
+// YR Redux: increased recent file count from 4 to 10. 9/9/2024
 void CFinalSunDlg::OnFileFile1() 
 {
 	if(DoesFileExist(theApp.m_Options.prev_maps[0])) OpenMap(theApp.m_Options.prev_maps[0]);
-	
 }
 
 void CFinalSunDlg::OnFileFile2() 
 {
 	if(DoesFileExist(theApp.m_Options.prev_maps[1])) OpenMap(theApp.m_Options.prev_maps[1]);
-	
 }
 
 void CFinalSunDlg::OnFileFile3() 
 {
 	if(DoesFileExist(theApp.m_Options.prev_maps[2])) OpenMap(theApp.m_Options.prev_maps[2]);
-	
 }
 
 void CFinalSunDlg::OnFileFile4() 
 {
 	if(DoesFileExist(theApp.m_Options.prev_maps[3])) OpenMap(theApp.m_Options.prev_maps[3]);
-	
+}
+
+void CFinalSunDlg::OnFileFile5()
+{
+	if (DoesFileExist(theApp.m_Options.prev_maps[4])) OpenMap(theApp.m_Options.prev_maps[4]);
+}
+
+void CFinalSunDlg::OnFileFile6()
+{
+	if (DoesFileExist(theApp.m_Options.prev_maps[5])) OpenMap(theApp.m_Options.prev_maps[5]);
+}
+
+void CFinalSunDlg::OnFileFile7()
+{
+	if (DoesFileExist(theApp.m_Options.prev_maps[6])) OpenMap(theApp.m_Options.prev_maps[6]);
+}
+
+void CFinalSunDlg::OnFileFile8()
+{
+	if (DoesFileExist(theApp.m_Options.prev_maps[7])) OpenMap(theApp.m_Options.prev_maps[7]);
+}
+
+void CFinalSunDlg::OnFileFile9()
+{
+	if (DoesFileExist(theApp.m_Options.prev_maps[8])) OpenMap(theApp.m_Options.prev_maps[8]);
+}
+
+void CFinalSunDlg::OnFileFile10()
+{
+	if (DoesFileExist(theApp.m_Options.prev_maps[9])) OpenMap(theApp.m_Options.prev_maps[9]);
 }
 
 // MW 07/20/01: Checks if file already exists in prev. files list. If not, adds it (may delete old ones)
 void CFinalSunDlg::InsertPrevFile(CString lpFilename)
 {
 	int i;
-	
-	//int free_at=-1;
-	for(i=0;i<4;i++)
+
+	for(i=0; i < (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)); i++)
 	{
 		CString f=theApp.m_Options.prev_maps[i];
 		CString f2=lpFilename;
@@ -3857,28 +3897,16 @@ void CFinalSunDlg::InsertPrevFile(CString lpFilename)
 		{
 			return;
 		}
-
-		/*if(free_at<0)
-		{
-			if(theApp.m_Options.prev_maps[i].GetLength()==0)
-			{
-				free_at=i;
-			}
-		}*/
 	}
 
 	CIniFile Options;
 	Options.LoadFile(u8AppDataPath +"\\FinalSun.ini");
-#ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath +"\\FinalAlert.ini");
-#endif
 
-	
+	#ifdef RA2_MODE
+		Options.LoadFile(u8AppDataPath +"\\FinalAlert.ini");
+	#endif
 
-
-
-
-	for(i=3;i>0;i--)
+	for(i = (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) - 1; i>0; i--)
 	{
 		theApp.m_Options.prev_maps[i]=theApp.m_Options.prev_maps[i-1];
 		char e[10];
@@ -3889,8 +3917,6 @@ void CFinalSunDlg::InsertPrevFile(CString lpFilename)
 
 	theApp.m_Options.prev_maps[0]=lpFilename;
 	Options.sections["Files"].values["0"]=theApp.m_Options.prev_maps[0];
-
-
 
 #ifndef RA2_MODE
 	Options.SaveFile(u8AppDataPath +"\\FinalSun.ini");
@@ -3906,17 +3932,9 @@ void CFinalSunDlg::OpenMap(LPCSTR lpFilename)
 {
 	CString r=GetLanguageStringACP("SAVEDLG_FILETYPES");
     r=TranslateStringVariables(8, r, ";");
-	//CFileDialog dlg(TRUE, NULL, NULL,  OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST, r);
 
 	char cuPath[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, cuPath);
-	//dlg.m_ofn.lpstrInitialDir=cuPath;
-
-	//if(theApp.m_Options.TSExe.GetLength()) dlg.m_ofn.lpstrInitialDir=(char*)(LPCTSTR)theApp.m_Options.TSExe;
-
-
-	//if(dlg.DoModal()==IDCANCEL) return;	
-
 
 	m_PKTHeader.Clear();
 

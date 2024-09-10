@@ -231,6 +231,12 @@ protected:
 	afx_msg void OnFileFile2();
 	afx_msg void OnFileFile3();
 	afx_msg void OnFileFile4();
+	afx_msg void OnFileFile5();
+	afx_msg void OnFileFile6();
+	afx_msg void OnFileFile7();
+	afx_msg void OnFileFile8();
+	afx_msg void OnFileFile9();
+	afx_msg void OnFileFile10();
 	afx_msg void OnMaptoolsSearchwaypoint();
 	afx_msg void OnMaptoolsToolscripts();
 	//}}AFX_MSG

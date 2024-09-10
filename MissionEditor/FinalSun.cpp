@@ -309,6 +309,7 @@ BOOL CFinalSunApp::InitInstance()
 
 	opts.fMiniMapScale = static_cast<float>(atof(optini.sections["MiniMap"].values.emplace("Scale", std::to_string(opts.fMiniMapScale).c_str()).first->second));
 
+	// TODO: ZOOM settings for INI don't work either fix or remove.
 	auto defaultViewSteps = CString(Join(",", opts.viewScaleSteps | std::views::transform([](auto v) {return std::to_string(v); })).c_str());
 	auto viewScaleStepsRange = SplitParams(optini.sections["UserInterface"].values.emplace("ViewScaleSteps", defaultViewSteps).first->second) | std::views::transform([](auto v) { return static_cast<float>(std::atof(v)); });
 	opts.viewScaleSteps.assign(viewScaleStepsRange.begin(), viewScaleStepsRange.end());
@@ -320,9 +321,9 @@ BOOL CFinalSunApp::InitInstance()
 
 	optini.SaveFile(iniFile);
 
-	// MW 07/20/01: Load file list
+	// YR Redux: increasing previous file count from 4 to 10. 9/9/2024
 	int i;
-	for (i = 0;i < 4;i++)
+	for (i=0; i < (sizeof(opts.prev_maps) / sizeof(*opts.prev_maps)); i++)
 	{
 		char c[50];
 		itoa(i, c, 10);

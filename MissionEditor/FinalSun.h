@@ -40,7 +40,7 @@
 struct OPTIONS{
 	CString TSExe;
 	CString LanguageName;
-	CString prev_maps[4];
+	CString prev_maps[10]; //4 YR Redux 9/9/2024
 	bool bPreferLocalTheaterFiles = true;
 	BOOL bFlat;
 	BOOL bEasy;
@@ -61,14 +61,16 @@ struct OPTIONS{
 	BOOL bNoSounds;
 	BOOL bDisableSlopeCorrection;
 	float fMiniMapScale = 2.0f;
-	float fLoadScreenDelayInSeconds = 3.5f;
+	float fLoadScreenDelayInSeconds = 0.0f; //3.5f YR Redux: removed load screen delay, loading is faster now. 9/9/2024
 	bool bShowStats = false;
 	bool bHighResUI = true;
-	bool bVSync = false;
-	std::vector<float> viewScaleSteps = { 0.75f, 0.5f, 0.25f };
+	bool bVSync = true; //false
+	// YR Redux: added steps for zooming out.
+	// std::vector<float> viewScaleSteps = {2.00f, 1.75f, 1.50f, 1.25f, 1.00f, 0.75f, 0.50f, 0.25f };
+	std::vector<float> viewScaleSteps = {1.00f, 0.75f, 0.50f, 0.25f};
 	bool viewScaleUseSteps = true;
 	float viewScaleSpeed = 15.0f;
-	bool useDefaultMouseCursor = false;
+	bool useDefaultMouseCursor = true; //false
 
 public:
 	BOOL bSearchLikeTS;

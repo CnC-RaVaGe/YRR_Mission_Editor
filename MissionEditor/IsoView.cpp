@@ -189,6 +189,7 @@ CIsoView::CIsoView()
 	m_viewScale = Vec2<CSProjected, float>(1.0f, 1.0f);
 	m_viewScaleControl = 1.0f;
 	updateFontScaled();
+	//TODO: Possibility of multi threaded ISO view painting.
 	//m_paintthread=new(CIsoPaintThread);
 	//m_paintthread->CreateThread();
 }
@@ -970,9 +971,7 @@ It is used to initialize and update the dialog.
 void CIsoView::UpdateDialog(BOOL bRepos)
 {
 	OutputDebugString("Isoview updated\n");
-
 	UpdateOverlayPictures();
-
 
 	if (bRepos && Map->GetIsoSize() != 0)
 	{
@@ -984,7 +983,6 @@ void CIsoView::UpdateDialog(BOOL bRepos)
 	}
 
 	RedrawWindow(NULL, NULL, RDW_INVALIDATE);
-
 }
 
 void CIsoView::UpdateScrollRanges()
@@ -6851,6 +6849,9 @@ BOOL CIsoView::OnMouseWheel(UINT nFlags, short zDelta, CPoint ptScreen)
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }
 
+
+//TODO: enable zooming out of the 1.0 zoom level to maybe 4.0 or the whole map.
+// Map view zoom controls ////////////////////////////////////////////////////
 void CIsoView::Zoom(CPoint& pt, float f)
 {
 	auto oldScaledMPos = GetProjectedCoordinatesFromClientCoordinates(pt);
@@ -6875,7 +6876,10 @@ void CIsoView::Zoom(CPoint& pt, float f)
 			stepIt = prevStepIt + 1;
 		if (stepIt < prevStepIt)
 			stepIt = prevStepIt - 1;
-		auto nextScale = stepIt == theApp.m_Options.viewScaleSteps.rend() ? 1.0f : *stepIt;
+
+		//TODO: 1.0f can be set to 2.0f to enable zoom out, but it doesn't render.
+		auto maximumZoom = 1.0f;
+		auto nextScale = stepIt == theApp.m_Options.viewScaleSteps.rend() ? maximumZoom : *stepIt;
 		m_viewScale.set(nextScale, nextScale);
 	}
 	
