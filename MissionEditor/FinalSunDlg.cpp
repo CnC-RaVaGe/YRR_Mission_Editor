@@ -372,9 +372,35 @@ BOOL CFinalSunDlg::OnInitDialog()
 	CDialog::BringWindowToTop();
 	
 
+	// YR Redux: added open last map at startup 9/9/2024
+	if(strlen(currentMapFile) == 0)
 	// Load files at startup.
 	if(strlen(currentMapFile)==0) // no map file specified
 	{
+		int recentmaps = sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps);
+		int i;
+		CString f;
+		OnFileOpenmap();
+		// Check if the open last map option is enabled and the recent maps list is not empty.
+		if (theApp.m_Options.bOpenLastMap)
+		{
+			for (i = recentmaps; i > 0; i--)
+			{
+				if (theApp.RecentFiles[i] == TRUE)
+				{
+					f = theApp.m_Options.prev_maps[i];
+					f.MakeLower();
+					strcpy(currentMapFile, f);
+					Map->LoadMap(currentMapFile);
+					break;
+				}
+			}
+		}
+		else
+		{
+			OnFileOpenmap();
+		}
+	}
 		// TODO: Add code to load last map automatically, with an option menu item to toggle it.
 		// See if option to load last edited map is checked, if its not offer the user to choose map.
 		// Load last edited map from recent files list.
@@ -2085,14 +2111,14 @@ void CFinalSunDlg::UpdateStrings()
 	// YR Redux: Increased recent file list from 4 to 10.
 	int prev_maps_count=0;
 
-	for(i=0; i< (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)); i++)
+	for(i=0; i < (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)); i++)
 	{
 		if(theApp.m_Options.prev_maps[i].GetLength()>0)
 		{
 			prev_maps_count++;
 
 			int id=0;
-			CString str="bla";
+			CString str="a";
 			str=theApp.m_Options.prev_maps[i];
 		
 			if(i==0) id=ID_FILE_FILE1;

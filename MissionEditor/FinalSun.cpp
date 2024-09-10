@@ -106,8 +106,8 @@ CFinalSunApp::CFinalSunApp()
 	// defining default options
 	m_Options.LanguageName = "English";
 	m_Options.bFlat = FALSE;
-	m_Options.bEasy = FALSE;
-	m_Options.bSupportMarbleMadness = FALSE;
+	//m_Options.bEasy = FALSE;
+	m_Options.bSupportMarbleMadness = TRUE;
 	m_Options.bMarbleMadness = FALSE;
 	m_Options.bOpenLastMap = TRUE;
 

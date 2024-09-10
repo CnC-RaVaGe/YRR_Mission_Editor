@@ -6624,7 +6624,6 @@ void CIsoView::DrawMap()
 		dd->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, NULL);
 	FlipHighResBuffer();
 	last_succeeded_operation = 10100;
-
 }
 
 // Draw map bounds lines for map edge and visible area.

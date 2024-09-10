@@ -486,9 +486,7 @@ void CLoading::Load()
 	{
 		std::this_thread::sleep_until(startTime + delay);
 	}
-
 	DestroyWindow();
-
 }
 
 
