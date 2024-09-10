@@ -89,15 +89,9 @@ BOOL CMyViewFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	
 	if(!m_Splitter.CreateStatic(this,1,2)) return FALSE;
 
-	if(!m_Splitter.CreateView(0,0,
-		RUNTIME_CLASS(CViewObjects),
-		z,
-		pContext)) return FALSE;
+	if(!m_Splitter.CreateView(0, 0, RUNTIME_CLASS(CViewObjects), z, pContext)) return FALSE;
 
-	if(!m_Splitter.CreateView(0,1,
-		RUNTIME_CLASS(CRightFrame),
-		t,
-		pContext)) return FALSE;
+	if(!m_Splitter.CreateView(0, 1, RUNTIME_CLASS(CRightFrame), t, pContext)) return FALSE;
 
 	OutputDebugString("CMyViewFrame::OnCreateClient(): windows created\n");
 

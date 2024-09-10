@@ -54,7 +54,6 @@
 // #include "inlines.h"
 // #include "MapData.h"
 #include "resource.h"
-#include "TipDlg.h"
 
 
 //{{AFX_INSERT_LOCATION}}

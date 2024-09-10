@@ -239,10 +239,10 @@ void CMiniMap::OnMouseMove(UINT nFlags, CPoint point)
 
 		RECT cr;
 		GetClientRect(&cr);
-		float defaultXSize = (Map->GetWidth() * 2 * m_scale);
-		float defaultYSize = (Map->GetHeight() * m_scale);
-		float resizedXScale = cr.right / defaultXSize;
-		float resizedYScale = cr.bottom / defaultYSize;
+		auto defaultXSize = (Map->GetWidth() * 2 * m_scale);
+		auto defaultYSize = (Map->GetHeight() * m_scale);
+		auto resizedXScale = cr.right / defaultXSize;
+		auto resizedYScale = cr.bottom / defaultYSize;
 
 		CFinalSunDlg& dlg = *(CFinalSunDlg*)theApp.GetMainWnd();
 		CIsoView& isoview = *dlg.m_view.m_isoview;

@@ -45,6 +45,7 @@ extern char AppPath[];
 
 extern ACTIONDATA AD;
 
+
 /////////////////////////////////////////////////////////////////////////////
 // CFinalSunApp
 
@@ -102,11 +103,13 @@ CFinalSunApp::CFinalSunApp()
 	/*memset(t_tilepics, 0, sizeof(TILEPICDATA)*10000);
 	memset(s_tilepics, 0, sizeof(TILEPICDATA)*10000);*/
 
+	// defining default options
 	m_Options.LanguageName = "English";
 	m_Options.bFlat = FALSE;
 	m_Options.bEasy = FALSE;
 	m_Options.bSupportMarbleMadness = FALSE;
 	m_Options.bMarbleMadness = FALSE;
+	m_Options.bOpenLastMap = TRUE;
 
 	auto log = u8AppDataPath;
 #ifdef TS_MODE
@@ -151,7 +154,7 @@ CFinalSunApp::CFinalSunApp()
 // CFinalSunApp initialization
 
 BOOL CFinalSunApp::InitInstance()
-{
+	{
 	m_hAccel = LoadAccelerators(this->m_hInstance, MAKEINTRESOURCE(IDR_MAIN));
 
 #ifndef NOSURFACES

@@ -141,8 +141,8 @@ protected:
 	afx_msg void OnDebugExportmappacknosections();
 	afx_msg void OnDebugExportmappack();
 	afx_msg void OnFileNew();
-	afx_msg void OnHelpTipoftheday();
-	afx_msg void OnOptionsSimpleview();
+	//afx_msg void OnHelpTipoftheday();
+	//afx_msg void OnOptionsSimpleview();
 	afx_msg void OnOptionsShowminimap();
 	afx_msg void OnFileValidatemap();
 	afx_msg void OnEnterIdle(UINT nWhy, CWnd* pWho);
@@ -223,8 +223,8 @@ protected:
 	afx_msg void OnEditCopywholemap();
 	afx_msg void OnEditPastewholemap();
 	afx_msg void OnMarblemadness();
-	afx_msg void OnOptionsSounds();
-	afx_msg void OnUpdateOptionsSounds(CCmdUI* pCmdUI);
+	//afx_msg void OnOptionsSounds();
+	//afx_msg void OnUpdateOptionsSounds(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsDisableslopecorrection();
 	afx_msg void OnOptionsShowbuildingoutline();
 	afx_msg void OnFileFile1();
@@ -239,6 +239,7 @@ protected:
 	afx_msg void OnFileFile10();
 	afx_msg void OnMaptoolsSearchwaypoint();
 	afx_msg void OnMaptoolsToolscripts();
+	//virtual HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:

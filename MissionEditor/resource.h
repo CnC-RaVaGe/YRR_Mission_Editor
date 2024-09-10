@@ -619,6 +619,8 @@
 #define ID_VIEW_SHOWBASENODES           40167
 #define ID_VIEW_SHOWCELL                40168
 #define ID_BUTTON40171                  40171
+#define ID_OPTIONS_OPENLASTMAPONSTARTUP 40200
+#define ID_OPTIONS_OPENLAST             40201
 #define IDS_LINEARVERSION               57604
 #define IDC_TOOLTIPCENTER               65535
 
@@ -627,7 +629,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        308
-#define _APS_NEXT_COMMAND_VALUE         40172
+#define _APS_NEXT_COMMAND_VALUE         40202
 #define _APS_NEXT_CONTROL_VALUE         1464
 #define _APS_NEXT_SYMED_VALUE           111
 #endif

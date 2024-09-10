@@ -573,7 +573,6 @@
     <ClCompile Include="TextDrawer.cpp" />
     <ClCompile Include="TileSetBrowserFrame.cpp" />
     <ClCompile Include="TileSetBrowserView.cpp" />
-    <ClCompile Include="TipDlg.cpp" />
     <ClCompile Include="ToolSettingsBar.cpp" />
     <ClCompile Include="TriggerActionsDlg.cpp" />
     <ClCompile Include="TriggerEditorDlg.cpp" />
@@ -669,7 +668,6 @@
     <ClInclude Include="TextDrawer.h" />
     <ClInclude Include="TileSetBrowserFrame.h" />
     <ClInclude Include="TileSetBrowserView.h" />
-    <ClInclude Include="TipDlg.h" />
     <ClInclude Include="ToolSettingsBar.h" />
     <ClInclude Include="TriggerActionsDlg.h" />
     <ClInclude Include="TriggerEditorDlg.h" />

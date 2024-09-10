@@ -30,7 +30,6 @@
 #include "info.h"
 #include "loading.h"
 #include "MapOpenDialog.h"
-//#include "NewMap->h"
 #include "newmapcreatedlg.h"
 #include "newmapcreatenewdlg.h"
 #include "newmapimportdlg.h"
@@ -61,8 +60,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -86,8 +83,6 @@ static UINT indicators[] =
 	ID_INDICATOR_SCRL,
 };
 
-
-
 #define ID_STATBAR 26111
 
 /////////////////////////////////////////////////////////////////////////////
@@ -106,12 +101,14 @@ CFinalSunDlg::CFinalSunDlg(CWnd* pParent /*=NULL*/)
 
 }
 
+
 void CFinalSunDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CFinalSunDlg)
 	//}}AFX_DATA_MAP
 }
+
 
 BEGIN_MESSAGE_MAP(CFinalSunDlg, CDialog)
 	//{{AFX_MSG_MAP(CFinalSunDlg)
@@ -132,8 +129,7 @@ BEGIN_MESSAGE_MAP(CFinalSunDlg, CDialog)
 	ON_COMMAND(ID_DEBUG_EXPORTMAPPACKNOSECTIONS, OnDebugExportmappacknosections)
 	ON_COMMAND(ID_DEBUG_EXPORTMAPPACK, OnDebugExportmappack)
 	ON_COMMAND(ID_FILE_NEW, OnFileNew)
-	ON_COMMAND(ID_HELP_TIPOFTHEDAY, OnHelpTipoftheday)
-	ON_COMMAND(ID_OPTIONS_SIMPLEVIEW, OnOptionsSimpleview)
+	//ON_COMMAND(ID_OPTIONS_SIMPLEVIEW, OnOptionsSimpleview)
 	ON_COMMAND(ID_OPTIONS_SHOWMINIMAP, OnOptionsShowminimap)
 	ON_COMMAND(ID_FILE_VALIDATEMAP, OnFileValidatemap)
 	ON_WM_ENTERIDLE()
@@ -214,8 +210,8 @@ BEGIN_MESSAGE_MAP(CFinalSunDlg, CDialog)
 	ON_COMMAND(ID_EDIT_COPYWHOLEMAP, OnEditCopywholemap)
 	ON_COMMAND(ID_EDIT_PASTEWHOLEMAP, OnEditPastewholemap)
 	ON_COMMAND(ID_MARBLEMADNESS, OnMarblemadness)
-	ON_COMMAND(ID_OPTIONS_SOUNDS, OnOptionsSounds)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_SOUNDS, OnUpdateOptionsSounds)
+	//ON_COMMAND(ID_OPTIONS_SOUNDS, OnOptionsSounds)
+	//ON_UPDATE_COMMAND_UI(ID_OPTIONS_SOUNDS, OnUpdateOptionsSounds)
 	ON_COMMAND(ID_OPTIONS_DISABLESLOPECORRECTION, OnOptionsDisableslopecorrection)
 	ON_COMMAND(ID_OPTIONS_SHOWBUILDINGOUTLINE, OnOptionsShowbuildingoutline)
 	ON_COMMAND(ID_FILE_FILE1, OnFileFile1)
@@ -229,21 +225,21 @@ BEGIN_MESSAGE_MAP(CFinalSunDlg, CDialog)
 	ON_COMMAND(ID_FILE_FILE9, OnFileFile9)
 	ON_COMMAND(ID_MAPTOOLS_SEARCHWAYPOINT, OnMaptoolsSearchwaypoint)
 	ON_COMMAND(ID_MAPTOOLS_TOOLSCRIPTS, OnMaptoolsToolscripts)
+
 	//}}AFX_MSG_MAP
-		ON_COMMAND(ID_OPTIONS_SMOOTHZOOM, &CFinalSunDlg::OnOptionsSmoothzoom)
-		ON_WM_SETCURSOR()
-		ON_COMMAND(ID_OPTIONS_USEDEFAULTMOUSECURSOR, &CFinalSunDlg::OnOptionsUsedefaultmousecursor)
-		END_MESSAGE_MAP()
+	ON_COMMAND(ID_OPTIONS_SMOOTHZOOM, &CFinalSunDlg::OnOptionsSmoothzoom)
+	ON_WM_SETCURSOR()
+	ON_COMMAND(ID_OPTIONS_USEDEFAULTMOUSECURSOR, &CFinalSunDlg::OnOptionsUsedefaultmousecursor)
+END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CFinalSunDlg message handler
 
 BOOL CFinalSunDlg::OnInitDialog()
 {
-
 	CDialog::OnInitDialog();
 
-	m_hArrowCursor = theApp.m_Options.useDefaultMouseCursor ? LoadCursor(NULL, IDC_ARROW) : m_hGameCursor;
+	//m_hArrowCursor = theApp.m_Options.useDefaultMouseCursor ? LoadCursor(NULL, IDC_ARROW) : m_hGameCursor;
 
 	errstream << "CFinalSunDlg::OnInitDialog() called" << endl;
 	errstream.flush();
@@ -255,22 +251,17 @@ BOOL CFinalSunDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// use small symbol
 	
 	CString cap;
-#ifndef RA2_MODE
-	cap= GetLanguageStringACP("MainDialogCaption");
-#else
-	cap=GetLanguageStringACP("MainDialogCaptionRA2");
-#endif
+	#ifndef RA2_MODE
+		cap= GetLanguageStringACP("MainDialogCaption");
+	#else
+		cap=GetLanguageStringACP("MainDialogCaptionRA2");
+	#endif
 
 	cap+=" (";
 	cap+=GetLanguageStringACP("NoMapLoaded");
 	cap+=")";
 	SetWindowText(cap);
 
-
-	// Matze:
-	// July 9th:
-	// Added toolbars
-	
 	BOOL success=true;
 	RECT r;
 	SIZE size_mainbar;
@@ -331,7 +322,6 @@ BOOL CFinalSunDlg::OnInitDialog()
 	rbi.cxIdeal=170;
 	success = success && m_bar.InsertBand(1, &rbi);
 	
-
 	m_bar.ShowWindow(SW_SHOW);
 	m_maintoolbar.ShowWindow(SW_SHOW);
 	//m_terraintoolbar.ShowWindow(SW_SHOW);
@@ -339,8 +329,6 @@ BOOL CFinalSunDlg::OnInitDialog()
 
 	m_bar.MinimizeBand(0);
 	m_bar.MaximizeBand(1);
-
-
 
 	if(!success) 
 	{
@@ -352,16 +340,12 @@ BOOL CFinalSunDlg::OnInitDialog()
 		exit(-5);
 	}
 
-	
 	errstream << "Updating menu" << endl;
 	errstream.flush();
 	
 	if(theApp.m_Options.bEasy && GetMenu()) GetMenu()->CheckMenuItem(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND | MF_CHECKED);	
 	
 	UpdateStrings();
-
-
-
 
 	// Matze:
 	// June 21, CLoading now non-modal.
@@ -379,8 +363,7 @@ BOOL CFinalSunDlg::OnInitDialog()
 	if(!theApp.m_Options.bSupportMarbleMadness)
 	{
 		TBBUTTON b;
-		m_terraintoolbar.GetToolBarCtrl().GetButton(9, &b);
-		
+		m_terraintoolbar.GetToolBarCtrl().GetButton(9, &b);	
 		m_terraintoolbar.GetToolBarCtrl().HideButton(b.idCommand);
 		m_terraintoolbar.GetToolBarCtrl().HideButton(ID_MARBLEMADNESS);
 	}
@@ -388,13 +371,66 @@ BOOL CFinalSunDlg::OnInitDialog()
 	ShowWindow(SW_SHOWMAXIMIZED);
 	CDialog::BringWindowToTop();
 	
+
+	// Load files at startup.
 	if(strlen(currentMapFile)==0) // no map file specified
 	{
-		// ok, let the user choose a map!
-		OnFileOpenmap();
-		//YR Redux: removed startup tips.
+		// TODO: Add code to load last map automatically, with an option menu item to toggle it.
+		// See if option to load last edited map is checked, if its not offer the user to choose map.
+		// Load last edited map from recent files list.
+		// See that the file exists, if it doesn't offer the user to choose a map.
+		BOOL previous_maps = FALSE;
+		if (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps) > 0);
+		{
+			previous_maps = TRUE;
+		}
+		
+		CIniFile Options;
+
+		Options.LoadFile(u8AppDataPath + "\\FinalSun.ini");
+		#ifdef RA2_MODE
+			Options.LoadFile(u8AppDataPath + "\\FinalAlert.ini");
+		#endif
+
+		if (GetMenu()->GetMenuState(ID_OPTIONS_OPENLAST, MF_BYCOMMAND) & MF_CHECKED && previous_maps == TRUE)
+		{
+			GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_UNCHECKED);
+
+			theApp.m_Options.bOpenLastMap = FALSE;
+			Options.sections["UserInterface"].values["OpenLastMapOnStartup"] = "0";
+			
+			int i;
+			CString f;
+
+			for (i = 0; (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) > i; i++)
+			{
+				if ((sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) > 1)
+				{
+					f = theApp.m_Options.prev_maps[i];
+					break;
+				}
+				else
+				{
+					OnFileOpenmap();
+				}
+			}
+
+			f.MakeLower();
+			strcpy(currentMapFile, f);
+			Map->LoadMap(currentMapFile);
+		}
+		else
+		{
+			GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_CHECKED);
+
+			theApp.m_Options.bOpenLastMap = TRUE;
+			Options.sections["UserInterface"].values["OpenLastMapOnStartup"] = "1";
+
+			// Let user pick a map to open.
+			OnFileOpenmap();
+		}
 	}
-	else // yah, map file specified
+	else
 	{
 		CString str = GetLanguageStringACP("MainDialogCaption");
  		str+=" (";
@@ -403,35 +439,31 @@ BOOL CFinalSunDlg::OnInitDialog()
  
 		this->SetWindowText(str);
 		SetCursor(LoadCursor(NULL, IDC_WAIT));
- 
-		Map->LoadMap(currentMapFile);
- 
-		SetCursor(m_hArrowCursor);
 
+		Map->LoadMap(currentMapFile);
 	}
 
 	UpdateDialogs();
 
-#ifndef RA2_MODE	
-	CTime t=t.GetCurrentTime();
+	#ifndef RA2_MODE	
+		CTime t=t.GetCurrentTime();
 	
-	if(t.GetDay()>=24 && t.GetDay()<=26 && t.GetMonth()==12)
-	{
-		CString str;
-		GetWindowText(str);
+		if(t.GetDay()>=24 && t.GetDay()<=26 && t.GetMonth()==12)
+		{
+			CString str;
+			GetWindowText(str);
 
-		SetWindowText(str+" Merry Christmas! Fröhliche Weihnachten!");
+			SetWindowText(str+" Merry Christmas! Fröhliche Weihnachten!");
 
-	}
-#endif
+		}
+	#endif
 	
-
 	return TRUE;  
 }
 
+
 void CFinalSunDlg::OnPaint() 
 {
-	
 	if (IsIconic())
 	{
 		CPaintDC dc(this); // DC for painting
@@ -455,10 +487,12 @@ void CFinalSunDlg::OnPaint()
 	}	
 }
 
+
 HCURSOR CFinalSunDlg::OnQueryDragIcon()
 {
 	return (HCURSOR) m_hIcon;
 }
+
 
 void CFinalSunDlg::OnFileQuit() 
 {
@@ -477,12 +511,12 @@ void CFinalSunDlg::OnSysCommand(UINT nID, LPARAM lParam)
 }
 
 
-
 void CFinalSunDlg::OnOK() 
 {
 	//just do nothing...
 	// this is a stub
 }
+
 
 void CFinalSunDlg::OnCancel() 
 {
@@ -490,16 +524,15 @@ void CFinalSunDlg::OnCancel()
 	// stub
 }
 
+
 void CFinalSunDlg::OnOptionsTiberiansunoptions() 
 {
-	
 	ShowOptionsDialog();
-	
 }
+
 
 void CFinalSunDlg::OnFileOpenmap() 
 {
-	
 	//CMapOpenDialog dlg(TRUE, NULL, NULL,  OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST, "TS maps|*.mpr;*.map|TS multi maps|*.mpr|TS single maps|*.map|");
 	CString r=GetLanguageStringACP("SAVEDLG_FILETYPES");
 	if(yuri_mode)
@@ -544,15 +577,11 @@ void CFinalSunDlg::OnFileOpenmap()
 		m_PKTHeader.LoadFile(extractFile, TRUE);
 		fileToOpen=m_PKTHeader.sections["MultiMaps"].values["1"]+".map";
 
-		
-
 		extractFile=u8AppDataPath.c_str();
 		extractFile+="\\mmx_tmp.map";
 		FSunPackLib::XCC_ExtractFile(fileToOpen, extractFile, hMix);
 		fileToOpen=extractFile;
 		
-			
-	
 		FSunPackLib::XCC_CloseMix(hMix);
 		bLoadedFromMMX=TRUE;
 	}
@@ -583,11 +612,8 @@ void CFinalSunDlg::OnFileOpenmap()
 	errstream << "Map->LoadMap() will be called" << endl;
 	errstream.flush();
 
-	
-
 	Map->LoadMap((char*)(LPCTSTR)fileToOpen);
 
-	
 	BOOL bNoMapFile=FALSE;
 	if(!Map->CheckMapPackData())
 	{
@@ -638,15 +664,13 @@ void CFinalSunDlg::OnFileOpenmap()
 	}
 
 	Sleep(200);
-
-	SetCursor(m_hArrowCursor);
-
-
+	//SetCursor(m_hArrowCursor);
 	bNoDraw=FALSE;
 
 	m_view.m_isoview->UpdateDialog(TRUE);
 	UpdateDialogs();
 }
+
 
 void CFinalSunDlg::UpdateDialogs(BOOL bOnlyMissionControl, BOOL bNoRepos)
 {
@@ -696,6 +720,7 @@ void CFinalSunDlg::UpdateDialogs(BOOL bOnlyMissionControl, BOOL bNoRepos)
 
 	AD.reset();
 }
+
 
 void CFinalSunDlg::OnFileSaveas() 
 {
@@ -760,11 +785,9 @@ void CFinalSunDlg::OnFileSaveas()
 		SaveMap(dlg.GetPathName());
 	}
 
-	
-
-	SetCursor(m_hArrowCursor);
-
+	//SetCursor(m_hArrowCursor);
 }
+
 
 void CFinalSunDlg::OnOptionsExportrulesini() 
 {
@@ -803,10 +826,10 @@ void CFinalSunDlg::OnOptionsExportrulesini()
 
 		_close(hfile);
 
-		SetCursor(m_hArrowCursor);
-
+		//SetCursor(m_hArrowCursor);
 	}
 }
+
 
 void CFinalSunDlg::OnHelpInfo() 
 {
@@ -823,10 +846,7 @@ void CFinalSunDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	m_view.ShowWindow(SW_SHOW);
 
 	if(!bShow) return;
-		
 }
-
-
 
 
 void CFinalSunDlg::OnFileSave() 
@@ -847,8 +867,6 @@ void CFinalSunDlg::OnFileSave()
 }
 
 
-
-
 void CFinalSunDlg::SaveMap(CString FileName_)
 {
 	SetCursor(LoadCursor(NULL, IDC_WAIT));
@@ -860,11 +878,8 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 	BOOL hidePreview=FALSE;
 	BOOL previewPrinted=FALSE;
 
-	
-
 	FileName_.MakeLower();
 	FileName_=(LPCSTR)FileName_; // GetLength() needs to return proper size
-
 
 	CString CoreName=FileName_;
 	CString Description;
@@ -884,114 +899,113 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 	if(CoreName.ReverseFind('\\')>=0) CoreName=CoreName.Right(CoreName.GetLength()-CoreName.ReverseFind('\\')-1);
 	if(CoreName.Find(".")>=0) CoreName=CoreName.Left(CoreName.Find("."));
 
-	
 
-	
-#ifdef RA2_MODE
-	if(Map->IsMultiplayer())
-	{
-		if(FileName_.Find(".mmx")>=0) bSaveAsMMX=TRUE; else bSaveAsMMX=FALSE;
-		if(FileName_.Find(".map")>=0) FileName_.Replace(".map",".mpr");
-		
-		// MW 07/27/01: Check for YRM
-		if(FileName_.Find(".mpr")>=0 && Map->IsYRMap()) FileName_.Replace(".mpr",".yrm");
-
-		
-		// MW 07/28/01: Create [Header]
-		int i;
-		int wp_count=0;
-		int xw[8]={0,0,0,0,0,0,0,0};
-		int yw[8]={0,0,0,0,0,0,0,0};
-		for(i=0;i<Map->GetWaypointCount();i++)
+	#ifdef RA2_MODE
+		if(Map->IsMultiplayer())
 		{
-			CString id;
-			DWORD pos;
-			Map->GetWaypointData(i, &id, &pos);
-			int idi;
-			idi=atoi(id);
-			if(idi!=i) break;
-			if(idi>=0 && idi<8) 
+			if(FileName_.Find(".mmx")>=0) bSaveAsMMX=TRUE; else bSaveAsMMX=FALSE;
+			if(FileName_.Find(".map")>=0) FileName_.Replace(".map",".mpr");
+		
+			// MW 07/27/01: Check for YRM
+			if(FileName_.Find(".mpr")>=0 && Map->IsYRMap()) FileName_.Replace(".mpr",".yrm");
+
+		
+			// MW 07/28/01: Create [Header]
+			int i;
+			int wp_count=0;
+			int xw[8]={0,0,0,0,0,0,0,0};
+			int yw[8]={0,0,0,0,0,0,0,0};
+			for(i=0;i<Map->GetWaypointCount();i++)
 			{
-				int x,y;
-				x=pos/Map->GetIsoSize();
-				y=pos%Map->GetIsoSize();
-				//PosToXY(pos, x,y);
-				xw[wp_count]=calcXPos(x,y);
-				yw[wp_count]=calcYPos(x,y);
-				wp_count++;	
+				CString id;
+				DWORD pos;
+				Map->GetWaypointData(i, &id, &pos);
+				int idi;
+				idi=atoi(id);
+				if(idi!=i) break;
+				if(idi>=0 && idi<8) 
+				{
+					int x,y;
+					x=pos/Map->GetIsoSize();
+					y=pos%Map->GetIsoSize();
+					//PosToXY(pos, x,y);
+					xw[wp_count]=calcXPos(x,y);
+					yw[wp_count]=calcYPos(x,y);
+					wp_count++;	
+				}
+			
 			}
-			
-		}
-		char c[50];
-		CIniFile& ini=Map->GetIniFile();
-		CIniFileSection& sec=ini.sections["Header"];
-		itoa(wp_count, c, 10);
-		sec.values["NumberStartingPoints"]=c;
-		for(i=0;i<8;i++)
-		{
-			CString s="Waypoint";
-			itoa(i+1, c, 10);
-			s+=c;
-			itoa(xw[i], c, 10);
-			CString val=c;
-			val+=",";
-			itoa(yw[i], c, 10);
-			val+=c;
-			sec.values[s]=val;
-		}
 
-		int startx, starty, width, height;
-		MC_GetHeaderRect(startx, starty, width, height);
-
-		itoa(height, c, 10);
-		sec.values["Height"]=c;
-		itoa(width, c, 10); 
-		sec.values["Width"]=c;
-
-		//CIniFile& ini=Map->GetIniFile();
-
-		CString left=GetParam(ini.sections["Map"].values["LocalSize"], 0);
-		CString top=GetParam(ini.sections["Map"].values["LocalSize"], 1);
-		
-		//startx=1;//Map->GetHeight()/2;//atoi(left);//Map->GetIsoSize()/2-Map->GetWidth()/2;//198/2-50;//Map->GetIsoSize()/2-Map->GetHeight()/2;//Map->GetWidth()/2-50;
-		//starty=Map->GetWidth();//Map->GetIsoSize()/2-Map->GetWidth()/2;//198/2-50;//Map->GetIsoSize()/2-Map->GetWidth()/2;//Map->GetHeight()/2-50;
-		itoa(startx, c, 10);
-		sec.values["StartX"]=c;
-		itoa(starty, c, 10);
-		sec.values["StartY"]=c;
-		
-		/*CMultiSaveOptionsDlg mso;
-			
-		if(FileName.Find(".mmx")>=0) mso.m_mmx=0; else mso.m_mmx=1;
-
-		if(mso.DoModal()==IDCANCEL) return;
-		
-		if(mso.m_mmx==0)
-		{
-			FileName.Replace(".mpr", ".map");
-			//FileName.Replace(" ", "");
-			if(CoreName.GetLength()>8) 
+			char c[50];
+			CIniFile& ini=Map->GetIniFile();
+			CIniFileSection& sec=ini.sections["Header"];
+			itoa(wp_count, c, 10);
+			sec.values["NumberStartingPoints"]=c;
+			for(i=0;i<8;i++)
 			{
-				CoreName=CoreName.Left(8);
-				FileName=CoreName+".map";
+				CString s="Waypoint";
+				itoa(i+1, c, 10);
+				s+=c;
+				itoa(xw[i], c, 10);
+				CString val=c;
+				val+=",";
+				itoa(yw[i], c, 10);
+				val+=c;
+				sec.values[s]=val;
+			}
+
+			int startx, starty, width, height;
+			MC_GetHeaderRect(startx, starty, width, height);
+
+			itoa(height, c, 10);
+			sec.values["Height"]=c;
+			itoa(width, c, 10); 
+			sec.values["Width"]=c;
+
+			//CIniFile& ini=Map->GetIniFile();
+
+			CString left=GetParam(ini.sections["Map"].values["LocalSize"], 0);
+			CString top=GetParam(ini.sections["Map"].values["LocalSize"], 1);
+		
+			//startx=1;//Map->GetHeight()/2;//atoi(left);//Map->GetIsoSize()/2-Map->GetWidth()/2;//198/2-50;//Map->GetIsoSize()/2-Map->GetHeight()/2;//Map->GetWidth()/2-50;
+			//starty=Map->GetWidth();//Map->GetIsoSize()/2-Map->GetWidth()/2;//198/2-50;//Map->GetIsoSize()/2-Map->GetWidth()/2;//Map->GetHeight()/2-50;
+			itoa(startx, c, 10);
+			sec.values["StartX"]=c;
+			itoa(starty, c, 10);
+			sec.values["StartY"]=c;
+		
+			/*CMultiSaveOptionsDlg mso;
+			
+			if(FileName.Find(".mmx")>=0) mso.m_mmx=0; else mso.m_mmx=1;
+
+			if(mso.DoModal()==IDCANCEL) return;
+		
+			if(mso.m_mmx==0)
+			{
+				FileName.Replace(".mpr", ".map");
+				//FileName.Replace(" ", "");
+				if(CoreName.GetLength()>8) 
+				{
+					CoreName=CoreName.Left(8);
+					FileName=CoreName+".map";
 				
-				CString s="The maximum filename length for MMX files is 8 chars, do you want to save the map as ";
-				s+=CoreName;
-				s+=".mmx?";
-				int res=MessageBox(s,"Error", MB_YESNO);
-				if(res!=IDYES) return;
-			}
+					CString s="The maximum filename length for MMX files is 8 chars, do you want to save the map as ";
+					s+=CoreName;
+					s+=".mmx?";
+					int res=MessageBox(s,"Error", MB_YESNO);
+					if(res!=IDYES) return;
+				}
 
-			bSaveAsMMX=TRUE;
+				bSaveAsMMX=TRUE;
 						
+			}
+			else
+			{
+				FileName.Replace(".mmx", ".mpr");
+				bSaveAsMMX=FALSE;
+			}*/
 		}
-		else
-		{
-			FileName.Replace(".mmx", ".mpr");
-			bSaveAsMMX=FALSE;
-		}*/
-	}
-#endif
+	#endif
 
 	CString MMXFileName=CoreName;
 	MMXFileName+=".mmx";
@@ -1008,7 +1022,6 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 	{
 		CSaveMapOptionsDlg opt;
 
-
 		CString gm=Map->GetIniFile().sections["Basic"].values["GameMode"];
 		gm.MakeLower();
 		if(gm.GetLength())
@@ -1024,9 +1037,11 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 			opt.m_TeamGame=gm.Find("teamgame")>=0;
 		}
 		else
-			opt.m_Standard=TRUE;
-
+		{
+			opt.m_Standard = TRUE;
+		}
 		
+
 		if(opt.DoModal()==IDCANCEL) return;
 
 		gm="";
@@ -1120,21 +1135,15 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 	UpdateWindow();	
 	errstream << "Calling UpdateIniFile()"<<endl;
 	
-	
-	
 	CSavingDlg dlg;
 	dlg.ShowWindow(SW_SHOW);
 	dlg.BringWindowToTop();
 	dlg.UpdateWindow();
 	Map->UpdateIniFile(dwFlags);
 
-		
-
 	CIniFile& ini=Map->GetIniFile();
 
-
 	int i;
-
 	for(i=0;i<ini.sections.size();i++)
 	{
 		if(ini.GetSection(i)->values.size()==0 || ini.GetSectionName(i)->GetLength()==0)
@@ -1181,13 +1190,8 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 		}
 	}
 
-	
-	
 	SetText("Saving...");
 	UpdateWindow();
-
-	
-		
 
 	std::wstring FileName = utf8ToUtf16(FileName_.GetString());
 
@@ -1204,25 +1208,23 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 		CloseHandle(hFile);
 		hFile=CreateFileW(u16tempfile.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 		
-
 		DWORD bwr;
 		
-#ifdef TS_MODE
-		fi= "; Map created with FinalSun Mission Editor";
-		fi+="\n";
-		fi+= "; note that all comments were truncated" ;
-		fi+= "\n";
-		fi+="\n";
-#else
-		fi= "; Map created with FinalAlert 2 Mission Editor";
-		fi+="\n";
-		fi+= "; note that all comments were truncated" ;
-		fi+= "\n";
-		fi+="\n";
-#endif
+		#ifdef TS_MODE
+			fi= "; Map created with FinalSun Mission Editor";
+			fi+="\n";
+			fi+= "; note that all comments were truncated" ;
+			fi+= "\n";
+			fi+="\n";
+		#else
+			fi= "; Map created with FinalAlert 2 Mission Editor";
+			fi+="\n";
+			fi+= "; note that all comments were truncated" ;
+			fi+= "\n";
+			fi+="\n";
+		#endif
 
 		WriteFile(hFile, fi, fi.GetLength(), &bwr, NULL);
-
 		fi="";
 
 		// MW 07/28/01: Header saving at top
@@ -1242,8 +1244,7 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 				int e;
 				CIniFileSection& sec=*ini.GetSection(i);
 				CString d;
-				
-			
+						
 				char c[50];
 				for(e=0;e<sec.values.size();e++)
 				{
@@ -1252,7 +1253,6 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 					fi+= *sec.GetValue(e) ;
 					fi+= "\n";
 					WriteFile(hFile, fi, fi.GetLength(), &bwr, NULL);
-	
 					
 					if(e%500==0)
 					{
@@ -1261,8 +1261,7 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 						itoa(percent,c ,10);
 						SetText((CString)"Saving... "+d+"( "+c+"% )");
 						UpdateWindow();
-					}
-					
+					}			
 				}
 
 				fi= "\n";
@@ -1287,8 +1286,7 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 				int e;
 				CIniFileSection& sec=*ini.GetSection(i);
 				CString d;
-				
-			
+							
 				char c[50];
 				for(e=0;e<sec.values.size();e++)
 				{
@@ -1297,7 +1295,6 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 					fi+= *sec.GetValue(e) ;
 					fi+= "\n";
 					WriteFile(hFile, fi, fi.GetLength(), &bwr, NULL);
-	
 					
 					if(e%500==0)
 					{
@@ -1306,8 +1303,7 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 						itoa(percent,c ,10);
 						SetText((CString)"Saving... "+d+"( "+c+"% )");
 						UpdateWindow();
-					}
-					
+					}				
 				}
 
 				fi= "\n";
@@ -1353,15 +1349,11 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 		{
 			if(rulessections.find(*ini.GetSectionName(i))!=rulessections.end() || (*ini.GetSectionName(i)=="Digest" || *ini.GetSectionName(i)=="PreviewPack" || *ini.GetSectionName(i)=="Preview" || *ini.GetSectionName(i)=="Header"))
 			{
-
-				
-
-				
+			
 			}
 			else if(*ini.GetSectionName(i)!="")
 			{
-				//MessageBox(ini.GetSectionName(i)->data());
-				
+				//MessageBox(ini.GetSectionName(i)->data());			
 				
 				//its a standard section:
 				fi= "[" ;
@@ -1375,7 +1367,6 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 				CIniFileSection& sec=*ini.GetSection(i);
 				CString d;
 				
-			
 				char c[50];
 				for(e=0;e<sec.values.size();e++)
 				{
@@ -1383,10 +1374,7 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 					fi+= "=" ;
 					fi+= *sec.GetValue(e) ;
 					fi+= "\n";
-					WriteFile(hFile, fi, fi.GetLength(), &bwr, NULL);
-
-					
-										
+					WriteFile(hFile, fi, fi.GetLength(), &bwr, NULL);			
 					
 					if(e%500==0)
 					{
@@ -1395,13 +1383,11 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 						itoa(percent,c ,10);
 						SetText((CString)"Saving... "+d+"( "+c+"% )");
 						UpdateWindow();
-					}
-					
+					}			
 				}
 
 				fi= "\n";
 				WriteFile(hFile, fi, fi.GetLength(), &bwr, NULL);			
-				
 			}
 		}
 
@@ -1465,7 +1451,6 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 				if(megawealth) gm+="megawealth, ";
 				if(duel) gm+="duel, ";
 				if(cooperative) gm+="cooperative, ";
-
 				if(gm.ReverseFind(',')>=0) gm=gm.Left(gm.ReverseFind(','));
 
 				f.sections[CoreName].values["GameMode"]=gm;
@@ -1475,21 +1460,18 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 				f.sections[CoreName].values["MaxPlayers"]=c;
 				itoa(minplayers,c,10);
 				f.sections[CoreName].values["MinPlayers"]=c;
-
 				f.sections[CoreName].values["CD"]="0,1";
-				
-
 				f.SaveFile(PKTFileName);
 
 				LPCSTR files[2];
 				files[0]=(LPCSTR)PKTFileName;
 				files[1]=(LPCSTR)MAPFileName;
 
-#ifdef RA2_MODE
-				auto game = yuri_mode ? FSunPackLib::Game::RA2_YR : FSunPackLib::Game::RA2;
-#else
-				auto game = FSunPackLib::Game::TS;
-#endif
+				#ifdef RA2_MODE
+					auto game = yuri_mode ? FSunPackLib::Game::RA2_YR : FSunPackLib::Game::RA2;
+				#else
+					auto game = FSunPackLib::Game::TS;
+				#endif
 				FSunPackLib::WriteMixFile(MMXFileName, files, 2, game);
 
 				DeleteFile(PKTFileName);
@@ -1504,10 +1486,9 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 
 		deleteFile(tempfile);
 
-	SetCursor(m_hArrowCursor);
+	//SetCursor(m_hArrowCursor);
 	//SetReady();
-
-	}
+}
 
 void CFinalSunDlg::SetReady()
 {
@@ -1521,8 +1502,6 @@ void CFinalSunDlg::SetText(const char *text)
 
 void CFinalSunDlg::OnMenuSelect(UINT nItemID, UINT nFlags, HMENU hSysMenu) 
 {
-	
-
 	CDialog::OnMenuSelect(nItemID, nFlags, hSysMenu);
 	
 	switch(nItemID)
@@ -1557,9 +1536,11 @@ void CFinalSunDlg::OnMenuSelect(UINT nItemID, UINT nFlags, HMENU hSysMenu)
 	case ID_HELP_INFO:
 		SetText(GetLanguageStringACP("HelpInfoHelp"));
 		break;
+	/*
 	case ID_HELP_TIPOFTHEDAY:
 		SetText(GetLanguageStringACP("HelpTipOfTheDayHelp"));
 		break;
+	*/
 	case ID_OPTIONS_EXPORTRULESINI:
 		SetText("Export the file rules.ini");
 		break;
@@ -1573,8 +1554,6 @@ void se_translator(unsigned int e, _EXCEPTION_POINTERS* p)
 {
 	throw(unsigned int)(e);
 }
-
-
 
 
 void CFinalSunDlg::OnFileRuntiberiansun()  // or RA2
@@ -1606,13 +1585,9 @@ void CFinalSunDlg::OnFileRuntiberiansun()  // or RA2
 }
 
 
-
-
 void CFinalSunDlg::OnFileImportmod() 
 {
 	/*CImportModDlg dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST, "TS maps|*.mpr;*.map|TS multi maps|*.mpr|TS single maps|*.map|");
-
-
 
 	char cuPath[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, cuPath);
@@ -1621,8 +1596,6 @@ void CFinalSunDlg::OnFileImportmod()
 	//if(theApp.m_Options.TSExe.GetLength()) dlg.m_ofn.lpstrInitialDir=(char*)(LPCTSTR)theApp.m_Options.TSExe;
 
 	if(dlg.DoModal()==IDCANCEL) return;	*/
-
-	
 }
 
 void CFinalSunDlg::OnDebugExportmappacknosections() 
@@ -1645,10 +1618,6 @@ void CFinalSunDlg::OnDebugExportmappacknosections()
 	BYTE values[400000];
 
 	//int hexlen=ConvertToHex((BYTE*)(LPCTSTR)ovrl, hex);
-
-	
-	
-
 	//ExtractIsoMapPack5(hex,hexlen, values);
 
 	HANDLE hFile=CreateFile("c:\\MAPPACKNOSECTIONS.BIN", GENERIC_WRITE, 0, NULL, TRUNCATE_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
@@ -1955,12 +1924,12 @@ void CFinalSunDlg::OnFileNew()
 					ini.sections[house].values["PlayerControl"]="yes";
 				}
 
-#ifndef RA2_MODE
-				ini.sections[house].values["ActsLike"]=c;
-				ini.sections[house].values["Side"]=house;
-#else
-				ini.sections[house].values["Country"]=*rules.sections[HOUSES].GetValue(i);
-#endif
+				#ifndef RA2_MODE
+					ini.sections[house].values["ActsLike"]=c;
+					ini.sections[house].values["Side"]=house;
+				#else
+					ini.sections[house].values["Country"]=*rules.sections[HOUSES].GetValue(i);
+				#endif
 				ini.sections[house].values["Edge"]="North";
 				
 				ini.sections[house].values["Color"]=rules.sections[*rules.sections[HOUSES].GetValue(i)].values["Color"];
@@ -1970,16 +1939,16 @@ void CFinalSunDlg::OnFileNew()
 				ini.sections[house].values["TechLevel"]="10";
 				ini.sections[house].values["PercentBuilt"]="100";
 
-#ifdef RA2_MODE
-				ini.sections[country].values["ParentCountry"]=country;
-				ini.sections[country].values["Name"]=country;
-				ini.sections[country].values["Suffix"]=rules.sections[country].values["Suffix"];
-				ini.sections[country].values["Prefix"]=rules.sections[country].values["Prefix"];
-				ini.sections[country].values["Color"]=rules.sections[country].values["Color"];
-				ini.sections[country].values["Side"]=rules.sections[country].values["Side"];
-				ini.sections[country].values["SmartAI"]=rules.sections[country].values["SmartAI"];
-				ini.sections[country].values["CostUnitsMult"]="1";
-#endif
+				#ifdef RA2_MODE
+					ini.sections[country].values["ParentCountry"]=country;
+					ini.sections[country].values["Name"]=country;
+					ini.sections[country].values["Suffix"]=rules.sections[country].values["Suffix"];
+					ini.sections[country].values["Prefix"]=rules.sections[country].values["Prefix"];
+					ini.sections[country].values["Color"]=rules.sections[country].values["Color"];
+					ini.sections[country].values["Side"]=rules.sections[country].values["Side"];
+					ini.sections[country].values["SmartAI"]=rules.sections[country].values["SmartAI"];
+					ini.sections[country].values["CostUnitsMult"]="1";
+				#endif
 
 
 			}
@@ -1989,7 +1958,7 @@ void CFinalSunDlg::OnFileNew()
 	else
 	{
 		// for RA2, we create standard houses
-#ifdef RA2_MODE
+		#ifdef RA2_MODE
 		int i;
 		for (i=0;i<rules.sections[HOUSES].values.size();i++)
 		{
@@ -2057,6 +2026,7 @@ void CFinalSunDlg::OnFileNew()
 	UpdateStrings();
 	Updates all dialog CStrings, and the CStrings from the isoview object list and the child dialogs
 */
+
 void CFinalSunDlg::UpdateStrings()
 {
 	last_succeeded_operation=20;
@@ -2101,13 +2071,14 @@ void CFinalSunDlg::UpdateStrings()
 	}
 
 	
-	if(theApp.m_Options.bEasy) my_menu->CheckMenuItem(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND | MF_CHECKED);
+	//if(theApp.m_Options.bEasy) my_menu->CheckMenuItem(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND | MF_CHECKED);
 	if(theApp.m_Options.bDisableAutoShore) my_menu->CheckMenuItem(ID_OPTIONS_DISABLEAUTOSHORE, MF_BYCOMMAND | MF_CHECKED);
 	if(theApp.m_Options.bDisableAutoLat) my_menu->CheckMenuItem(ID_OPTIONS_DISABLEAUTOLAT, MF_BYCOMMAND | MF_CHECKED);
 	if(theApp.m_Options.bDisableSlopeCorrection) my_menu->CheckMenuItem(ID_OPTIONS_DISABLESLOPECORRECTION, MF_BYCOMMAND | MF_CHECKED);
 	if(theApp.m_Options.bShowCells) my_menu->CheckMenuItem(ID_OPTIONS_SHOWBUILDINGOUTLINE, MF_BYCOMMAND | MF_CHECKED);
-	if(theApp.m_Options.useDefaultMouseCursor) my_menu->CheckMenuItem(ID_OPTIONS_USEDEFAULTMOUSECURSOR, MF_BYCOMMAND | MF_CHECKED);
-	if(!theApp.m_Options.viewScaleUseSteps) my_menu->CheckMenuItem(ID_OPTIONS_SMOOTHZOOM, MF_BYCOMMAND | MF_CHECKED);
+	if(theApp.m_Options.bOpenLastMap) my_menu->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_CHECKED);
+	//if(theApp.m_Options.useDefaultMouseCursor) my_menu->CheckMenuItem(ID_OPTIONS_USEDEFAULTMOUSECURSOR, MF_BYCOMMAND | MF_CHECKED);
+	//if(!theApp.m_Options.viewScaleUseSteps) my_menu->CheckMenuItem(ID_OPTIONS_SMOOTHZOOM, MF_BYCOMMAND | MF_CHECKED);
 
 	
 	// MW 07/20/01: Show prev. opened files
@@ -2141,10 +2112,11 @@ void CFinalSunDlg::UpdateStrings()
 
 
 
-#ifdef RA2_MODE
-	// my_menu->DeleteMenu(4, MF_BYPOSITION);
-#endif
+	#ifdef RA2_MODE
+		// my_menu->DeleteMenu(4, MF_BYPOSITION);
+	#endif
 
+	/*
 	if(theApp.m_Options.bEasy) my_menu->GetSubMenu(3)->DeleteMenu(0, MF_BYPOSITION);
 
 	if(theApp.m_Options.bEasy)
@@ -2160,15 +2132,15 @@ void CFinalSunDlg::UpdateStrings()
 			terrain_my_menu->DeleteMenu(i, MF_BYPOSITION);
 		}
 	}
+	*/
 
-#ifndef SCRIPT_SUPPORT
-	my_menu->GetSubMenu(3)->DeleteMenu(ID_MAPTOOLS_TOOLSCRIPTS, MF_BYCOMMAND);
-#endif
+	#ifndef SCRIPT_SUPPORT
+		my_menu->GetSubMenu(3)->DeleteMenu(ID_MAPTOOLS_TOOLSCRIPTS, MF_BYCOMMAND);
+	#endif
 
 	// now attach this my_menu to the window
 	SetMenu(my_menu);
 
-	
 	// update the tabs
 	/*TCITEM tci;
 	memset(&tci, 0, sizeof(TCITEM));
@@ -2215,66 +2187,57 @@ void CFinalSunDlg::UpdateStrings()
 	if(theApp.m_Options.bEasy) GetMenu()->CheckMenuItem(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND | MF_CHECKED);
 	if(!theApp.m_Options.bNoSounds) GetMenu()->CheckMenuItem(ID_OPTIONS_SOUNDS, MF_BYCOMMAND | MF_CHECKED);
 
-	
-	
 	RedrawWindow(NULL,NULL,RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
 }
 
-void CFinalSunDlg::OnHelpTipoftheday() 
-{
-	CTipDlg tip;
-	tip.DoModal();
-	
-}
 
 void CFinalSunDlg::UnloadAll()
 {
 	int iQuit=MessageBox(GetLanguageStringACP("MainDialogExitQuestion"), GetLanguageStringACP("MainDialogExitQuestionCap"), MB_ICONQUESTION | MB_YESNO | MB_DEFBUTTON2);
-	if(iQuit==IDNO) return;
-	else{
+	if(iQuit==IDNO) 
+	return;
+	else
+	{
 		try
 		{
-			
-		CShutDownDlg dlg(this);
-		dlg.ShowWindow(SW_SHOW);
-		dlg.UpdateWindow();
+			CShutDownDlg dlg(this);
+			dlg.ShowWindow(SW_SHOW);
+			dlg.UpdateWindow();
 
-		tiledata=0;
+			tiledata=0;
 
-		theApp.m_loading->FreeAll();
+			theApp.m_loading->FreeAll();
 		
-		rules.Clear();
-		ai.Clear();
-		art.Clear();
-		tiles_t.Clear();
-		tiles_s.Clear();
-		tiles_u.Clear();
-		Map->GetIniFile().Clear();
-		sound.Clear();
-		tutorial.Clear();
-		g_data.Clear();
-		language.Clear();
-		
-		
+			rules.Clear();
+			ai.Clear();
+			art.Clear();
+			tiles_t.Clear();
+			tiles_s.Clear();
+			tiles_u.Clear();
+			Map->GetIniFile().Clear();
+			sound.Clear();
+			tutorial.Clear();
+			g_data.Clear();
+			language.Clear();
 				
-		DestroyWindow();
+			DestroyWindow();
 		}
 		catch(...)
 		{
 			DestroyWindow();
 		}
-	}
-
-	
+	}	
 }
 
+
+/*
 void CFinalSunDlg::OnOptionsSimpleview() 
 {
 	CIniFile Options;
 	Options.LoadFile(u8AppDataPath+"\\FinalSun.ini");
-#ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
+	#ifdef RA2_MODE
+		Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
+	#endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND) & MF_CHECKED)
 	{
@@ -2294,14 +2257,15 @@ void CFinalSunDlg::OnOptionsSimpleview()
 
 	UpdateStrings();
 
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
-	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
+	#ifndef RA2_MODE
+		Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+	#else
+		Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+	#endif
 
 	UpdateDialogs();
 }
+*/
 
 
 void CFinalSunDlg::OnOptionsShowminimap() 
@@ -2309,6 +2273,7 @@ void CFinalSunDlg::OnOptionsShowminimap()
 	bMiniMapClosedByUser=FALSE;
 	this->m_view.m_minimap.UpdateView();
 }
+
 
 void CFinalSunDlg::HideAllDialogs()
 {
@@ -2342,6 +2307,7 @@ void CFinalSunDlg::HideAllDialogs()
 		m_triggers.ShowWindow(SW_HIDE);
 }
 
+
 void CFinalSunDlg::OnFileValidatemap() 
 {
 	CMapValidator validator;
@@ -2350,15 +2316,10 @@ void CFinalSunDlg::OnFileValidatemap()
 }
 
 
-
-
 void CFinalSunDlg::OnEnterIdle(UINT nWhy, CWnd* pWho) 
 {
 	CDialog::OnEnterIdle(nWhy, pWho);
-	
-	
 }
-
 
 
 void CFinalSunDlg::OnEditBasicsettings() 
@@ -2369,7 +2330,6 @@ void CFinalSunDlg::OnEditBasicsettings()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
-		
 	}
 
 	if(m_basic.m_hWnd!=NULL)
@@ -3735,6 +3695,7 @@ void CFinalSunDlg::CheckAvail(CCmdUI *pCmdUI)
 	}*/
 }
 
+/*
 void CFinalSunDlg::OnOptionsSounds() 
 {
 	CIniFile Options;
@@ -3757,17 +3718,19 @@ void CFinalSunDlg::OnOptionsSounds()
 	}
 
 	
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
-	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif	
+	#ifndef RA2_MODE
+		Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+	#else
+		Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+	#endif	
 }
+
 
 void CFinalSunDlg::OnUpdateOptionsSounds(CCmdUI* pCmdUI) 
 {
 	pCmdUI->SetCheck(theApp.m_Options.bNoSounds ? 0 : 1);	
 }
+*/
 
 void CFinalSunDlg::OnOptionsDisableslopecorrection() 
 {
@@ -3833,52 +3796,92 @@ void CFinalSunDlg::OnOptionsShowbuildingoutline()
 // YR Redux: increased recent file count from 4 to 10. 9/9/2024
 void CFinalSunDlg::OnFileFile1() 
 {
-	if(DoesFileExist(theApp.m_Options.prev_maps[0])) OpenMap(theApp.m_Options.prev_maps[0]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[0]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[0]);
+		theApp.RecentFiles[0] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile2() 
 {
-	if(DoesFileExist(theApp.m_Options.prev_maps[1])) OpenMap(theApp.m_Options.prev_maps[1]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[1]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[1]);
+		theApp.RecentFiles[1] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile3() 
 {
-	if(DoesFileExist(theApp.m_Options.prev_maps[2])) OpenMap(theApp.m_Options.prev_maps[2]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[2]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[2]);
+		theApp.RecentFiles[2] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile4() 
 {
-	if(DoesFileExist(theApp.m_Options.prev_maps[3])) OpenMap(theApp.m_Options.prev_maps[3]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[3]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[3]);
+		theApp.RecentFiles[3] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile5()
 {
-	if (DoesFileExist(theApp.m_Options.prev_maps[4])) OpenMap(theApp.m_Options.prev_maps[4]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[4]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[4]);
+		theApp.RecentFiles[4] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile6()
 {
-	if (DoesFileExist(theApp.m_Options.prev_maps[5])) OpenMap(theApp.m_Options.prev_maps[5]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[5]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[5]);
+		theApp.RecentFiles[5] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile7()
 {
-	if (DoesFileExist(theApp.m_Options.prev_maps[6])) OpenMap(theApp.m_Options.prev_maps[6]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[6]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[6]);
+		theApp.RecentFiles[6] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile8()
 {
-	if (DoesFileExist(theApp.m_Options.prev_maps[7])) OpenMap(theApp.m_Options.prev_maps[7]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[7]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[7]);
+		theApp.RecentFiles[7] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile9()
 {
-	if (DoesFileExist(theApp.m_Options.prev_maps[8])) OpenMap(theApp.m_Options.prev_maps[8]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[8]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[8]);
+		theApp.RecentFiles[8] = TRUE;
+	}
 }
 
 void CFinalSunDlg::OnFileFile10()
 {
-	if (DoesFileExist(theApp.m_Options.prev_maps[9])) OpenMap(theApp.m_Options.prev_maps[9]);
+	if (DoesFileExist(theApp.m_Options.prev_maps[9]))
+	{
+		OpenMap(theApp.m_Options.prev_maps[9]);
+		theApp.RecentFiles[9] = TRUE;
+	}
 }
 
 // MW 07/20/01: Checks if file already exists in prev. files list. If not, adds it (may delete old ones)

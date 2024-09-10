@@ -60,11 +60,13 @@ struct OPTIONS{
 	BOOL bDisableAutoLat;
 	BOOL bNoSounds;
 	BOOL bDisableSlopeCorrection;
+	BOOL bOpenLastMap;
 	float fMiniMapScale = 2.0f;
 	float fLoadScreenDelayInSeconds = 0.0f; //3.5f YR Redux: removed load screen delay, loading is faster now. 9/9/2024
 	bool bShowStats = false;
 	bool bHighResUI = true;
 	bool bVSync = true; //false
+
 	// YR Redux: added steps for zooming out.
 	// std::vector<float> viewScaleSteps = {2.00f, 1.75f, 1.50f, 1.25f, 1.00f, 0.75f, 0.50f, 0.25f };
 	std::vector<float> viewScaleSteps = {1.00f, 0.75f, 0.50f, 0.25f};
@@ -88,6 +90,7 @@ public:
 	DWORD pidInst;
 	OPTIONS m_Options;
 	CLoading* m_loading;
+	BOOL RecentFiles[9];
 	CFinalSunApp();
 
 	const std::string& getLogFileName() const

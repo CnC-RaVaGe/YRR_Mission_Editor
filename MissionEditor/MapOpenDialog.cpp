@@ -57,16 +57,13 @@ UINT CALLBACK OFNHookProc(
 			CurMap.InsertFile(utf16ToUtf8(psz),"Basic");
 
 			SetDlgItemText(hdlg, IDC_MAPNAME, CurMap.sections["Basic"].values["Name"]);
-			
-			
+				
 		}
 		else if (ofn.hdr.code==CDN_FOLDERCHANGE)
 			RedrawWindow(GetParent(hdlg),NULL,NULL,RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE );
 	}
-
 	return 0;
 }
-
 
 IMPLEMENT_DYNAMIC(CMapOpenDialog, CFileDialog)
 
@@ -78,7 +75,6 @@ CMapOpenDialog::CMapOpenDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt, LPCTSTR
 	m_ofn.lpTemplateName=MAKEINTRESOURCE(IDD_MYOPENDIALOG);
 	m_ofn.lpfnHook=OFNHookProc;
 }
-
 
 BEGIN_MESSAGE_MAP(CMapOpenDialog, CFileDialog)
 	//{{AFX_MSG_MAP(CMapOpenDialog)
