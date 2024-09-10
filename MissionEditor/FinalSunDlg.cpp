@@ -205,6 +205,7 @@ BEGIN_MESSAGE_MAP(CFinalSunDlg, CDialog)
 	ON_COMMAND(ID_MAPTOOLS_AUTOCREATESHORES, OnMaptoolsAutocreateshores)
 	ON_COMMAND(ID_OPTIONS_DISABLEAUTOSHORE, OnOptionsDisableautoshore)
 	ON_COMMAND(ID_OPTIONS_DISABLEAUTOLAT, OnOptionsDisableautolat)
+	ON_COMMAND(ID_OPTIONS_OPENLAST, OnOptionsOpenLastMapOnStartup)
 	ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 	ON_COMMAND(ID_EDIT_COPYWHOLEMAP, OnEditCopywholemap)
@@ -343,7 +344,8 @@ BOOL CFinalSunDlg::OnInitDialog()
 	errstream << "Updating menu" << endl;
 	errstream.flush();
 	
-	if(theApp.m_Options.bEasy && GetMenu()) GetMenu()->CheckMenuItem(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND | MF_CHECKED);	
+	//if(theApp.m_Options.bEasy && GetMenu()) GetMenu()->CheckMenuItem(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND | MF_CHECKED);
+	//if(theApp.m_Options.bOpenLastMap && GetMenu()) GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_CHECKED);
 	
 	UpdateStrings();
 
@@ -372,62 +374,36 @@ BOOL CFinalSunDlg::OnInitDialog()
 	CDialog::BringWindowToTop();
 	
 
-	// Load files at startup.
-	if(strlen(currentMapFile)==0) // no map file specified
+	// YR Redux: added open last map at startup 910/9/2024
+	if(strlen(currentMapFile)==0)
 	{
-		// TODO: Add code to load last map automatically, with an option menu item to toggle it.
-		// See if option to load last edited map is checked, if its not offer the user to choose map.
-		// Load last edited map from recent files list.
-		// See that the file exists, if it doesn't offer the user to choose a map.
-		BOOL previous_maps = FALSE;
-		if (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps) > 0);
+		// Check if maps have been previously opened.
+		if (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps) > 0)
 		{
-			previous_maps = TRUE;
-		}
-		
-		CIniFile Options;
-
-		Options.LoadFile(u8AppDataPath + "\\FinalSun.ini");
-		#ifdef RA2_MODE
-			Options.LoadFile(u8AppDataPath + "\\FinalAlert.ini");
-		#endif
-
-		if (GetMenu()->GetMenuState(ID_OPTIONS_OPENLAST, MF_BYCOMMAND) & MF_CHECKED && previous_maps == TRUE)
-		{
-			GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_UNCHECKED);
-
-			theApp.m_Options.bOpenLastMap = FALSE;
-			Options.sections["UserInterface"].values["OpenLastMapOnStartup"] = "0";
-			
-			int i;
-			CString f;
-
-			for (i = 0; (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) > i; i++)
+			// Check if user has enabled the option to load last used map.
+			if(theApp.m_Options.bOpenLastMap == TRUE)
 			{
-				if ((sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) > 1)
+				int i;
+				CString f;
+
+				// Check that the map files exist and attempt to open each one.
+				for (i = 0; (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) > i; i++)
 				{
-					f = theApp.m_Options.prev_maps[i];
-					break;
+					if ((sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) > 1)
+					{
+						f = theApp.m_Options.prev_maps[i];
+						f.MakeLower();
+						break;
+					}
+					else
+					{
+						OnFileOpenmap();
+					}
 				}
-				else
-				{
-					OnFileOpenmap();
-				}
+
+				strcpy(currentMapFile, f);
+				Map->LoadMap(currentMapFile);
 			}
-
-			f.MakeLower();
-			strcpy(currentMapFile, f);
-			Map->LoadMap(currentMapFile);
-		}
-		else
-		{
-			GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_CHECKED);
-
-			theApp.m_Options.bOpenLastMap = TRUE;
-			Options.sections["UserInterface"].values["OpenLastMapOnStartup"] = "1";
-
-			// Let user pick a map to open.
-			OnFileOpenmap();
 		}
 	}
 	else
@@ -3513,12 +3489,11 @@ void CFinalSunDlg::OnMaptoolsAutocreateshores()
 
 void CFinalSunDlg::OnOptionsDisableautoshore() 
 {
-
 	CIniFile Options;
 	Options.LoadFile(u8AppDataPath+"\\FinalSun.ini");
-#ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
+	#ifdef RA2_MODE
+		Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
+	#endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_DISABLEAUTOSHORE, MF_BYCOMMAND) & MF_CHECKED)
 	{
@@ -3532,82 +3507,22 @@ void CFinalSunDlg::OnOptionsDisableautoshore()
 		theApp.m_Options.bDisableAutoShore=TRUE;
 		Options.sections["UserInterface"].values["DisableAutoShore"]="1";
 	}
-
 	
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
-	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
-
+	#ifndef RA2_MODE
+		Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+	#else
+		Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+	#endif
 }
 
-
-
-
-
-//DEL void CFinalSunDlg::OnNcPaint() 
-//DEL {
-//DEL 	CBitmap b;
-//DEL 	b.LoadBitmap(IDB_TEXTURE1);
-//DEL 	CDC dc;
-//DEL 	
-//DEL 
-//DEL 	CDC* target=GetWindowDC();
-//DEL 	dc.CreateCompatibleDC(target);
-//DEL 	dc.SelectObject(b);
-//DEL 
-//DEL 	BITMAP bd;
-//DEL 	b.GetBitmap(&bd);
-//DEL 
-//DEL 	RECT r;
-//DEL 	GetWindowRect(&r);
-//DEL 
-//DEL 	int count=(r.right-r.left)/bd.bmWidth+1;
-//DEL 	int i;
-//DEL 	for(i=0;i<count;i++)
-//DEL 	{
-//DEL 		target->BitBlt(i*bd.bmWidth,0,bd.bmWidth, bd.bmHeight-1, &dc, 0, 0, SRCCOPY);
-//DEL 	}
-//DEL 
-//DEL 	ReleaseDC(target);
-//DEL 	
-//DEL 	CMenu* m=GetMenu();
-//DEL 	if(m)
-//DEL 	{
-//DEL 		count=m->GetMenuItemCount();
-//DEL 		for(i=0;i<count;i++)
-//DEL 		{
-//DEL 			DRAWITEMSTRUCT t;
-//DEL 			t.CtlType=ODT_MENU;
-//DEL 			t.itemID=m->GetMenuItemID(i);
-//DEL 			t.itemAction=ODA_DRAWENTIRE;
-//DEL 			t.itemState=ODS_DEFAULT;
-//DEL 			t.hwndItem=(HWND)m->m_hMenu;
-//DEL 			t.rcItem=r;
-//DEL 			CString text;
-//DEL 			m->GetMenuString(t.itemID, text, MF_BYCOMMAND);
-//DEL 			t.itemData=(int)(LPCSTR)text;
-//DEL 
-//DEL 			m->DrawItem(&t);			
-//DEL 		}
-//DEL 	}
-//DEL 	
-//DEL 
-//DEL 	
-//DEL 	dc.DeleteDC();
-//DEL 	b.DeleteObject();
-//DEL 
-//DEL 	// Kein Aufruf von CDialog::OnNcPaint() für Zeichnungsnachrichten
-//DEL }
 
 void CFinalSunDlg::OnOptionsDisableautolat() 
 {
 	CIniFile Options;
 	Options.LoadFile(u8AppDataPath+"\\FinalSun.ini");
-#ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
+	#ifdef RA2_MODE
+		Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
+	#endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_DISABLEAUTOLAT, MF_BYCOMMAND) & MF_CHECKED)
 	{
@@ -3622,13 +3537,42 @@ void CFinalSunDlg::OnOptionsDisableautolat()
 		Options.sections["UserInterface"].values["DisableAutoLat"]="1";
 	}
 
-	
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
-	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
+	#ifndef RA2_MODE
+		Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+	#else
+		Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+	#endif
 }
+
+
+void CFinalSunDlg::OnOptionsOpenLastMapOnStartup()
+{
+	CIniFile Options;
+	Options.LoadFile(u8AppDataPath + "\\FinalSun.ini");
+	#ifdef RA2_MODE
+		Options.LoadFile(u8AppDataPath + "\\FinalAlert.ini");
+	#endif
+
+	if (GetMenu()->GetMenuState(ID_OPTIONS_OPENLAST, MF_BYCOMMAND) & MF_CHECKED)
+	{
+		GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_UNCHECKED);
+		theApp.m_Options.bOpenLastMap = FALSE;
+		Options.sections["UserInterface"].values["OpenLastMapOnStartup"] = "0";
+	}
+	else
+	{
+		GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_CHECKED);
+		theApp.m_Options.bOpenLastMap = TRUE;
+		Options.sections["UserInterface"].values["OpenLastMapOnStartup"] = "1";
+	}
+
+	#ifndef RA2_MODE
+		Options.SaveFile(u8AppDataPath + "\\FinalSun.ini");
+	#else
+		Options.SaveFile(u8AppDataPath + "\\FinalAlert.ini");
+	#endif
+}
+
 
 void CFinalSunDlg::OnEditPaste() 
 {
@@ -3637,11 +3581,13 @@ void CFinalSunDlg::OnEditPaste()
 	AD.z_data=0;
 }
 
+
 void CFinalSunDlg::OnEditCopy() 
 {
 	Sound(SOUND_POSITIVE);
 	AD.mode=ACTIONMODE_COPY;	
 }
+
 
 void CFinalSunDlg::OnEditCopywholemap() 
 {
@@ -3649,12 +3595,14 @@ void CFinalSunDlg::OnEditCopywholemap()
 	Map->Copy();	
 }
 
+
 void CFinalSunDlg::OnEditPastewholemap() 
 {
 	Sound(SOUND_POSITIVE);
 	Map->Paste(Map->GetIsoSize()/2,Map->GetIsoSize()/2,0);
 	m_view.m_isoview->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 }
+
 
 void CFinalSunDlg::OnMarblemadness() 
 {
@@ -3671,6 +3619,7 @@ void CFinalSunDlg::OnMarblemadness()
 	m_view.m_isoview->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 	m_view.m_browser->m_view.SetTileSet(m_view.m_browser->m_view.m_currentTileSet, TRUE);
 }
+
 
 void CFinalSunDlg::CheckAvail(CCmdUI *pCmdUI)
 {
