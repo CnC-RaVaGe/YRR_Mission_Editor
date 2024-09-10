@@ -619,8 +619,7 @@
 #define ID_VIEW_SHOWBASENODES           40167
 #define ID_VIEW_SHOWCELL                40168
 #define ID_BUTTON40171                  40171
-#define ID_OPTIONS_OPENLASTMAPONSTARTUP 40200
-#define ID_OPTIONS_OPENLAST             40201
+#define ID_OPTIONS_OPENLAST				40200
 #define IDS_LINEARVERSION               57604
 #define IDC_TOOLTIPCENTER               65535
 

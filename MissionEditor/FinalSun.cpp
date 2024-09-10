@@ -84,6 +84,7 @@ CFinalSunApp::CFinalSunApp()
 	*(strrchr(AppPath, '\\') + 1) = 0;
 
 	// Initialize AppData
+	//TODO: Add an option to toggle using AppData directory or the program directory for portable mode.
 	const std::wstring AppDataPathFolder = utf8ToUtf16(u8AppDataPath.substr(0, u8AppDataPath.size() - 1));
 	auto create_dir_res = SHCreateDirectoryExW(NULL, AppDataPathFolder.c_str(), nullptr);
 	if (ERROR_SUCCESS != create_dir_res && ERROR_ALREADY_EXISTS != create_dir_res)
@@ -100,32 +101,29 @@ CFinalSunApp::CFinalSunApp()
 		exit(1);
 	}
 
-	/*memset(t_tilepics, 0, sizeof(TILEPICDATA)*10000);
-	memset(s_tilepics, 0, sizeof(TILEPICDATA)*10000);*/
-
 	// defining default options
 	m_Options.LanguageName = "English";
 	m_Options.bFlat = FALSE;
 	//m_Options.bEasy = FALSE;
 	m_Options.bSupportMarbleMadness = TRUE;
 	m_Options.bMarbleMadness = FALSE;
-	m_Options.bOpenLastMap = TRUE;
+	theApp.m_Options.bOpenLastMap = FALSE;
 
 	auto log = u8AppDataPath;
-#ifdef TS_MODE
-	log += "finalsunlog.txt";
-#else
-	log += "finalalert2log.txt";
-#endif
+	#ifdef TS_MODE
+		log += "finalsunlog.txt";
+	#else
+		log += "finalalert2log.txt";
+	#endif
 	m_u8LogFileName = log;
 	errstream.open(m_u8LogFileName, ios_base::trunc);
 	errstream << "\uFEFF"; // BOM
 
-#ifdef TS_MODE
-	errstream << "FinalSun log file" << std::endl << "----------------------" << std::endl << std::endl;
-#else
-	errstream << "FinalAlert 2 log file" << std::endl << "----------------------" << std::endl << std::endl;
-#endif
+	#ifdef TS_MODE
+		errstream << "FinalSun log file" << std::endl << "----------------------" << std::endl << std::endl;
+	#else
+		errstream << "FinalAlert 2 log file" << std::endl << "----------------------" << std::endl << std::endl;
+	#endif
 	errstream << "CFinalSunApp::CFinalSunApp() called" << std::endl;
 
 	errstream << "App Path: " << AppPath << std::endl;
@@ -157,39 +155,39 @@ BOOL CFinalSunApp::InitInstance()
 	{
 	m_hAccel = LoadAccelerators(this->m_hInstance, MAKEINTRESOURCE(IDR_MAIN));
 
-#ifndef NOSURFACES
-	if (GetDeviceCaps(GetDC(GetDesktopWindow()), BITSPIXEL) <= 8)
-	{
-		MessageBox(0, "You currently only have 8 bit color mode enabled. This is not recommended. You can continue, but this will cause a significant slowdown while loading graphics, and result in poor graphics quality", "Error", 0);
-		//exit(0);
-	}
-#else
-	if (GetDeviceCaps(GetDC(GetDesktopWindow()), BITSPIXEL) <= 8)
-	{
-		MessageBox(0, "You currently only have 8 bit color mode enabled. FinalSun/FinalAlert 2 will not work in 8 bit color mode. See readme.txt for further information!", "Error", 0);
-		exit(0);
-	}
+	#ifndef NOSURFACES
+		if (GetDeviceCaps(GetDC(GetDesktopWindow()), BITSPIXEL) <= 8)
+		{
+			MessageBox(0, "You currently only have 8 bit color mode enabled. This is not recommended. You can continue, but this will cause a significant slowdown while loading graphics, and result in poor graphics quality", "Error", 0);
+			//exit(0);
+		}
+	#else
+		if (GetDeviceCaps(GetDC(GetDesktopWindow()), BITSPIXEL) <= 8)
+		{
+			MessageBox(0, "You currently only have 8 bit color mode enabled. FinalSun/FinalAlert 2 will not work in 8 bit color mode. See readme.txt for further information!", "Error", 0);
+			exit(0);
+		}
 #endif
 
 	ParseCommandLine();
 
 	// Load application data
 	std::string datafile = AppPath;
-#ifdef TS_MODE
-	datafile += "\\FSData.ini";
-#else
-	datafile += "\\FAData.ini";
-#endif
+	#ifdef TS_MODE
+		datafile += "\\FSData.ini";
+	#else
+		datafile += "\\FAData.ini";
+	#endif
 
 	g_data.LoadFile(datafile);
 
 	// Load language data
 	std::string languagefile = AppPath;
-#ifndef RA2_MODE
-	languagefile += "\\FSLanguage.ini";
-#else
-	languagefile += "\\FALanguage.ini";
-#endif
+	#ifndef RA2_MODE
+		languagefile += "\\FSLanguage.ini";
+	#else
+		languagefile += "\\FALanguage.ini";
+	#endif
 	language.LoadFile(languagefile);
 
 	if (language.sections.size() == 0)
@@ -198,13 +196,13 @@ BOOL CFinalSunApp::InitInstance()
 		exit(0);
 	}
 
-#ifndef RA2_MODE
-	const std::string iniName = "FinalSun.ini";
-	const std::string defaultIniName = "FinalSunDefaults.ini";
-#else
-	const std::string iniName = "FinalAlert.ini";
-	const std::string defaultIniName = "FinalAlertDefaults.ini";
-#endif
+	#ifndef RA2_MODE
+		const std::string iniName = "FSSettings.ini";
+		const std::string defaultIniName = "FinalSunDefaults.ini";
+	#else
+		const std::string iniName = "FASettings.ini";
+		const std::string defaultIniName = "FinalAlertDefaults.ini";
+	#endif
 
 	// ok lets get some options
 	CIniFile optini;
@@ -335,7 +333,7 @@ BOOL CFinalSunApp::InitInstance()
 
 	if (opts.bDoNotLoadTemperateGraphics && opts.bDoNotLoadSnowGraphics)
 	{
-		MessageBox(0, "You have turned off loading of both snow and temperate terrain in 'FinalAlert.ini'. At least one of these must be loaded. The application will now quit.", "Error", 0);
+		MessageBox(0, "You have turned off loading of both snow and temperate terrain in 'FASettings.ini'. At least one of these must be loaded. The application will now quit.", "Error", 0);
 		exit(-982);
 	}
 

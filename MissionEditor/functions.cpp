@@ -329,9 +329,9 @@ void ShowOptionsDialog()
 	CIniFile optini;
 	iniFile=u8AppDataPath;
 #ifndef RA2_MODE
-	iniFile+="\\FinalSun.ini";
+	iniFile+="\\FSSettings.ini";
 #else
-	iniFile+="\\FinalAlert.ini";
+	iniFile+="\\FASettings.ini";
 #endif
 	optini.LoadFile(iniFile);
 	CTSOptions opt;
