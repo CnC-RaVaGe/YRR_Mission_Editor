@@ -315,8 +315,7 @@ void HandleParamList(CComboBox &cb, int type)
 
 void ShowOptionsDialog()
 {
-	// show the options dialog, and save the options.
-
+// show the options dialog, and save the options.
 #ifdef RA2_MODE
 	CString game = "RA2";
 	CString app = "FinalAlert";
@@ -325,13 +324,14 @@ void ShowOptionsDialog()
 	CString app = "FinalSun";
 #endif
 
+	//TODO: Set file search to game by default.
 	std::string iniFile="";	
 	CIniFile optini;
 	iniFile=u8AppDataPath;
 #ifndef RA2_MODE
-	iniFile+="\\FinalSun.ini";
+	iniFile+="\\FSSettings.ini";
 #else
-	iniFile+="\\FinalAlert.ini";
+	iniFile+="\\FASettings.ini";
 #endif
 	optini.LoadFile(iniFile);
 	CTSOptions opt;
@@ -346,22 +346,27 @@ void ShowOptionsDialog()
 		optini.sections[app].values["FileSearchLikeGame"]="yes";
 		theApp.m_Options.bSearchLikeTS=TRUE;
 	}
-	else {
+	else 
+	{
 		theApp.m_Options.bSearchLikeTS=FALSE;
 		optini.sections[app].values["FileSearchLikeGame"]="no";
 	}
 
-	auto bOldPreferLocalTheaterFiles = theApp.m_Options.bPreferLocalTheaterFiles;
-	theApp.m_Options.bPreferLocalTheaterFiles = opt.m_PreferLocalTheaterFiles ? true : false;
-	optini.sections[app].values["PreferLocalTheaterFiles"] = theApp.m_Options.bPreferLocalTheaterFiles ? "1" : "0";
+	// TODO: Set game theatre files as default.
+	// auto bOldPreferLocalTheaterFiles = theApp.m_Options.bPreferLocalTheaterFiles;
+	// theApp.m_Options.bPreferLocalTheaterFiles = opt.m_PreferLocalTheaterFiles ? true : false;
+	// optini.sections[app].values["PreferLocalTheaterFiles"] = theApp.m_Options.bPreferLocalTheaterFiles ? "1" : "0";
 
-
-	if (
+	/*
+	if(
 		(
 			(bOldPreferLocalTheaterFiles != theApp.m_Options.bPreferLocalTheaterFiles) ||
 			(bOldSearch != theApp.m_Options.bSearchLikeTS)
 		) && bOptionsStartup == FALSE)
-		MessageBox(0, GetLanguageStringACP("RestartNeeded"), "Restart", 0);
+		{
+			MessageBox(0, GetLanguageStringACP("RestartNeeded"), "Restart", 0);
+		}
+	*/
 	
 
 	CString oldLang=theApp.m_Options.LanguageName;
@@ -434,30 +439,30 @@ CString GetLanguageStringACP(CString name)
 	if(language.sections[theApp.m_Options.LanguageName+"-Strings"].values.find(name)==language.sections[theApp.m_Options.LanguageName+"-Strings"].values.end())
 	{
 		CString s=language.sections["English-Strings"].values[name];	
-#ifndef RA2_MODE
+	#ifndef RA2_MODE
 		s=TranslateStringVariables(9, s, "FinalSun");
-#else
-#ifdef YR_MODE
+	#else
+	#ifdef YR_MODE
 		s=TranslateStringVariables(9, s, "FinalAlert 2: Yuri's Revenge");
-#else
+	#else
 		s=TranslateStringVariables(9, s, "FinalAlert 2");
-#endif
-#endif
+	#endif
+	#endif
 		return ToACP(s);
 	}
 
 	CString s;
 	s= language.sections[theApp.m_Options.LanguageName+"-Strings"].values[name];
 
-#ifndef RA2_MODE
-	if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalSun");
-#else
-#ifdef YR_MODE
-	if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalAlert 2: Yuri's Revenge");
-#else
-	if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalAlert 2");
-#endif
-#endif
+	#ifndef RA2_MODE
+		if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalSun");
+	#else
+	#ifdef YR_MODE
+		if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalAlert 2: Yuri's Revenge");
+	#else
+		if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalAlert 2");
+	#endif
+	#endif
 
 	
 
@@ -478,19 +483,19 @@ CString TranslateStringACP(CString u8EnglishString)
 		return u8EnglishString;
 	}
 
-#ifdef RA2_MODE
-	CString sec2=theApp.m_Options.LanguageName+"-TranslationsRA2";
-	if(language.sections[sec2].values.end()==language.sections[sec2].values.find(u8EnglishString))
-	{
-		if(language.sections["English-TranslationsRA2"].FindName(u8EnglishString)>=0)
+	#ifdef RA2_MODE
+		CString sec2=theApp.m_Options.LanguageName+"-TranslationsRA2";
+		if(language.sections[sec2].values.end()==language.sections[sec2].values.find(u8EnglishString))
 		{
-			CString s=language.sections["English-TranslationsRA2"].values[u8EnglishString];
-			return ToACP(s);
+			if(language.sections["English-TranslationsRA2"].FindName(u8EnglishString)>=0)
+			{
+				CString s=language.sections["English-TranslationsRA2"].values[u8EnglishString];
+				return ToACP(s);
+			}
 		}
-	}
-	else
-		return ToACP(language.sections[sec2].values[u8EnglishString]);
-#endif
+		else
+			return ToACP(language.sections[sec2].values[u8EnglishString]);
+	#endif
 	
 	
 	CString sec=theApp.m_Options.LanguageName+"-Translations";
@@ -503,38 +508,39 @@ CString TranslateStringACP(CString u8EnglishString)
 		if(language.sections[seceng].FindName(u8EnglishString)>=0)
 		{
 			CString s=language.sections[seceng].values[u8EnglishString];
-#ifndef RA2_MODE
-			s=TranslateStringVariables(9, s, "FinalSun");
-#else
-#ifdef YR_MODE
-			s=TranslateStringVariables(9, s, "FinalAlert 2: Yuri's Revenge");
-#else			
-			s=TranslateStringVariables(9, s, "FinalAlert 2");
-#endif
-#endif
+			#ifndef RA2_MODE
+				s=TranslateStringVariables(9, s, "FinalSun");
+			#else
+			#ifdef YR_MODE
+				s=TranslateStringVariables(9, s, "FinalAlert 2: Yuri's Revenge");
+			#else			
+				s=TranslateStringVariables(9, s, "FinalAlert 2");
+			#endif
+			#endif
 			return ToACP(s);
 		}
-#ifndef RA2_MODE
-		return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalSun"));
-#else
-#ifdef YR_MODE
-		return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalAlert 2: Yuri's Revenge"));
-#else
-		return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalAlert 2"));
-#endif
-#endif
+
+		#ifndef RA2_MODE
+				return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalSun"));
+		#else
+		#ifdef YR_MODE
+				return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalAlert 2: Yuri's Revenge"));
+		#else
+				return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalAlert 2"));
+		#endif
+		#endif
 	}
 
 	CString s=language.sections[sec].values[u8EnglishString];
-#ifndef RA2_MODE
-	s=TranslateStringVariables(9,s,"FinalSun");
-#else
-#ifdef YR_MODE
-	s=TranslateStringVariables(9,s,"FinalAlert 2: Yuri's Revenge");
-#else
-	s=TranslateStringVariables(9,s,"FinalAlert 2");
-#endif
-#endif
+	#ifndef RA2_MODE
+		s=TranslateStringVariables(9,s,"FinalSun");
+	#else
+	#ifdef YR_MODE
+		s=TranslateStringVariables(9,s,"FinalAlert 2: Yuri's Revenge");
+	#else
+		s=TranslateStringVariables(9,s,"FinalAlert 2");
+	#endif
+	#endif
 
 	return ToACP(s);
 }
@@ -547,6 +553,8 @@ void TruncSpace(string& str)
 	TruncSpace(cstr);
 	str=cstr;
 }
+
+
 void TruncSpace(CString& str)
 {
 	str.TrimLeft();
@@ -554,11 +562,13 @@ void TruncSpace(CString& str)
 	if(str.Find(" ")>=0) str.Delete(str.Find(" "), str.GetLength()-str.Find(" "));
 }
 
+
 CString GetText(CWnd* wnd){
 	CString str;
 	wnd->GetWindowText(str);
 	return str;
 }
+
 
 CString GetText(CSliderCtrl* wnd)
 {
@@ -567,6 +577,7 @@ CString GetText(CSliderCtrl* wnd)
 	itoa(v,c,10);
 	return(c);
 }
+
 
 CString GetText(CComboBox* wnd){
 
@@ -614,6 +625,7 @@ void Info(const char* data, string& house, string& type, int& strength, int& x, 
 	}while(takeABreak==FALSE);
 };
 
+
 void UnitInfo(const char* data, string& house, string& type, int& strength, int& x, int& y, int& direction, string& action, string& actiontrigger, int & u1, int & u2, int& u3, int& u4, int& u5, int& u6)
 {
 	house=GetParam(data, 0);	
@@ -631,6 +643,7 @@ void UnitInfo(const char* data, string& house, string& type, int& strength, int&
 	u5=atoi(GetParam(data, 12));
 	u6=atoi(GetParam(data, 13));
 }
+
 
 void AirInfo(const char* data, string& house, string& type, int& strength, int& x, int& y, int& direction, string& action, string& actiontrigger, int & u1, int & u2, int& u3, int& u4)
 {
@@ -668,6 +681,7 @@ void InfanteryInfo(const char* data, string& house, string& type, int& strength,
 	u5=atoi(GetParam(data, 12));	
 }
 
+
 void StructureInfo(const char* data, string& house, string& type, int& strength, int& x, int& y, int& direction, string& action, int & u1, int & u2, int& energy, int& upgrades, int& u5, string& upgrade1, string& upgrade2, string& upgrade3, int& u9, int& u10)
 {
 	house=GetParam(data, 0);	
@@ -689,6 +703,7 @@ void StructureInfo(const char* data, string& house, string& type, int& strength,
 	u10=atoi(GetParam(data, 16));
 }
 
+
 void PosToXY(const char* pos, int* X, int* Y)
 {
   int Posleng;
@@ -705,6 +720,7 @@ void PosToXY(const char* pos, int* X, int* Y)
   *Y = atoi(YS);
 
 }
+
 
 bool HSVToRGB(const float h, const float s, const float v, float& r, float& g, float& b)
 {
@@ -741,6 +757,7 @@ bool HSVToRGB(const float h, const float s, const float v, float& r, float& g, f
 	return true;
 }
 
+
 void HSVToRGB(const unsigned char hsv[3], unsigned char rgb[3])
 {
 	float frgb[3];
@@ -748,6 +765,7 @@ void HSVToRGB(const unsigned char hsv[3], unsigned char rgb[3])
 	for (int i = 0; i < 3; ++i)
 		rgb[i] = (frgb[i] < 0.0 ? 0.0 : (frgb[i] > 1.0 ? 1.0 : frgb[i])) * 255.0;
 }
+
 
 std::array<unsigned char, 3> HSVToRGB(const float h, const float s, const float v)
 {
@@ -759,12 +777,14 @@ std::array<unsigned char, 3> HSVToRGB(const float h, const float s, const float 
 	return ret;
 }
 
+
 std::array<unsigned char, 3> HSVToRGB(const unsigned char hsv[3])
 {
 	std::array<unsigned char, 3> ret;
 	HSVToRGB(hsv, ret.data());
 	return ret;
 }
+
 
 void ListBuildings(CComboBox& cb, BOOL bININame)
 {
@@ -796,6 +816,7 @@ void ListBuildings(CComboBox& cb, BOOL bININame)
 	}
 }
 
+
 void ListInfantry(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
@@ -818,6 +839,7 @@ void ListInfantry(CComboBox& cb)
 		}
 	}
 }
+
 
 void ListUnits(CComboBox& cb)
 {
@@ -842,6 +864,7 @@ void ListUnits(CComboBox& cb)
 	}
 }
 
+
 void ListAircraft(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
@@ -865,6 +888,7 @@ void ListAircraft(CComboBox& cb)
 	}
 }
 
+
 void ListTechtypes(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
@@ -886,6 +910,8 @@ void ListTechtypes(CComboBox& cb)
 			cb.AddString(s);
 		}
 	}
+
+
 	for(i=0;i<rules.sections["InfantryTypes"].values.size();i++)
 	{
 		if(rules.sections["InfantryTypes"].GetValueOrigPos(i)<0) continue;
@@ -903,6 +929,8 @@ void ListTechtypes(CComboBox& cb)
 			cb.AddString(s);
 		}
 	}
+
+
 	for(i=0;i<rules.sections["VehicleTypes"].values.size();i++)
 	{
 		if(rules.sections["VehicleTypes"].GetValueOrigPos(i)<0) continue;
@@ -920,6 +948,8 @@ void ListTechtypes(CComboBox& cb)
 			cb.AddString(s);
 		}
 	}
+
+
 	for(i=0;i<rules.sections["BuildingTypes"].values.size();i++)
 	{
 		if(rules.sections["BuildingTypes"].GetValueOrigPos(i)<0) continue;
@@ -939,6 +969,7 @@ void ListTechtypes(CComboBox& cb)
 	}
 }
 
+
 // should be ListLocals()
 void ListGlobals(CComboBox& cb)
 {
@@ -955,6 +986,7 @@ void ListGlobals(CComboBox& cb)
 	}
 }
 
+
 void ListRulesGlobals(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
@@ -969,47 +1001,48 @@ void ListRulesGlobals(CComboBox& cb)
 	}
 }
 
+
 extern map<CString, XCString> AllStrings;
 void ListTutorial(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
 
-#ifndef RA2_MODE
-	int i;
-	for(i=0;i<tutorial.sections["Tutorial"].values.size();i++)
-	{
-		CString s;
-		s=*tutorial.sections["Tutorial"].GetValueName(i);
+	#ifndef RA2_MODE
+		int i;
+		for(i=0;i<tutorial.sections["Tutorial"].values.size();i++)
+		{
+			CString s;
+			s=*tutorial.sections["Tutorial"].GetValueName(i);
 
-		s+=" ";
+			s+=" ";
 
-		s+=*tutorial.sections["Tutorial"].GetValue(i);
+			s+=*tutorial.sections["Tutorial"].GetValue(i);
 
-		cb.AddString(s);
-	}
-#else
-	
-	typedef map<CString, XCString>::iterator it;
-	it _it=AllStrings.begin();
-	/*it begin;
-	it end;
-	begin=CCStrings.begin();
-	end=CCStrings.end();*/
+			cb.AddString(s);
+		}
 
-	int i;
-	for(i=0;i<CCStrings.size();i++)
-	{
+	#else
+		typedef map<CString, XCString>::iterator it;
+		it _it=AllStrings.begin();
+		/*it begin;
+		it end;
+		begin=CCStrings.begin();
+		end=CCStrings.end();*/
+
+		int i;
+		for(i=0;i<CCStrings.size();i++)
+		{
 		
-		CString s;
-		s=_it->first;
-		s+=" : ";
-		s+=_it->second.cString;
+			CString s;
+			s=_it->first;
+			s+=" : ";
+			s+=_it->second.cString;
 
-		cb.AddString(s);
-		_it++;
-	}
+			cb.AddString(s);
+			_it++;
+		}
 
-#endif
+	#endif
 }
 
 void ListTriggers(CComboBox& cb)
@@ -1032,6 +1065,7 @@ void ListTriggers(CComboBox& cb)
 	}	
 }
 
+
 void ListYesNo(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
@@ -1039,55 +1073,66 @@ void ListYesNo(CComboBox& cb)
 	cb.AddString("0 " + GetLanguageStringACP("No"));
 }
 
+
 void ListSounds(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
-#ifdef RA2_MODE
-	int i;
-	for(i=0;i<sound.sections["SoundList"].values.size();i++)
-	{
-		CString s;
-		s=*sound.sections["SoundList"].GetValue(i);
+	#ifdef RA2_MODE
 
-		cb.AddString(s);
-	}
-#endif
+		int i;
+		for(i=0;i<sound.sections["SoundList"].values.size();i++)
+		{
+			CString s;
+			s=*sound.sections["SoundList"].GetValue(i);
+
+			cb.AddString(s);
+		}
+
+	#endif
 }
+
+
 void ListThemes(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
-#ifdef RA2_MODE
-	int i;
-	for(i=0;i<theme.sections["Themes"].values.size();i++)
-	{
-		CString s;
-		s=*theme.sections["Themes"].GetValue(i);
 
-		TruncSpace(s);
+	#ifdef RA2_MODE
+		int i;
+		for(i=0;i<theme.sections["Themes"].values.size();i++)
+		{
+			CString s;
+			s=*theme.sections["Themes"].GetValue(i);
 
-		if(s.GetLength()==0) continue;
+			TruncSpace(s);
 
-		s+=" ";
-		s+=AllStrings[sound.sections[s].values["Name"]].cString;
+			if(s.GetLength()==0) continue;
 
-		cb.AddString(s);
-	}
-#endif
+			s+=" ";
+			s+=AllStrings[sound.sections[s].values["Name"]].cString;
+
+			cb.AddString(s);
+		}
+	#endif
 }
+
+
 void ListSpeeches(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
-#ifdef RA2_MODE
-	int i;
-	for(i=0;i<eva.sections["DialogList"].values.size();i++)
-	{
-		CString s;
-		s=*eva.sections["DialogList"].GetValue(i);
 
-		cb.AddString(s);
-	}
-#endif
+	#ifdef RA2_MODE
+		int i;
+		for(i=0;i<eva.sections["DialogList"].values.size();i++)
+		{
+			CString s;
+			s=*eva.sections["DialogList"].GetValue(i);
+
+			cb.AddString(s);
+		}
+	#endif
 }
+
+
 void ListSpecialWeapons(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
@@ -1107,6 +1152,7 @@ void ListSpecialWeapons(CComboBox& cb)
 	}	
 }
 
+
 void ListAnimations(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
@@ -1124,6 +1170,7 @@ void ListAnimations(CComboBox& cb)
 		cb.AddString(s);
 	}	
 }
+
 
 void ListParticles(CComboBox& cb)
 {
@@ -1143,6 +1190,7 @@ void ListParticles(CComboBox& cb)
 	}
 }
 
+
 void ListCrateTypes(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
@@ -1151,6 +1199,7 @@ void ListSpeechBubbleTypes(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
 }
+
 
 void ListMovies(CComboBox& cb, BOOL bListNone, BOOL bListParam)
 {
@@ -1169,11 +1218,12 @@ void ListMovies(CComboBox& cb, BOOL bListNone, BOOL bListParam)
 			CString s=*art.sections["Movies"].GetValue(i);
 			cb.AddString(s);
 		}
-		if(sel>=0) cb.SetCurSel(sel);
+
+		if(sel>=0) 
+		cb.SetCurSel(sel);
 	}
 	else
 	{
-		
 		while(cb.DeleteString(0)!=CB_ERR);
 
 		int i;
@@ -1191,9 +1241,9 @@ void ListMovies(CComboBox& cb, BOOL bListNone, BOOL bListParam)
 			cb.AddString(s);
 
 		}
-
 	}
 }
+
 
 void ListTags(CComboBox& cb, BOOL bListNone)
 {
@@ -1218,6 +1268,7 @@ void ListTags(CComboBox& cb, BOOL bListNone)
 	if(sel>=0) cb.SetCurSel(sel);
 }
 
+
 int GetRulesHousesSize()
 {
 	int i;
@@ -1230,6 +1281,7 @@ int GetRulesHousesSize()
 
 	return count;
 }
+
 
 // a bug adds an empty house to the rules section, delete it here
 int RepairRulesHouses()
@@ -1258,6 +1310,7 @@ int RepairRulesHouses()
 
 	return count;
 }
+
 
 // MW 07/27/01: Modified for <Player @ A> etc in YR
 void ListHouses(CComboBox &cb, BOOL bNumbers, BOOL bCountries, BOOL bPlayers)
@@ -1306,53 +1359,55 @@ void ListHouses(CComboBox &cb, BOOL bNumbers, BOOL bCountries, BOOL bPlayers)
 				cb.AddString("<Player @ G>");
 				cb.AddString("<Player @ H>");
 			}
-
-			
 		}
 				
-		for(i=0;i<ini.sections[sSection].values.size();i++)
+		for (i = 0;i < ini.sections[sSection].values.size();i++)
 		{
 			CString j;
 
 #ifdef RA2_MODE
-			j=*ini.sections[sSection].GetValue(i);
+			j = *ini.sections[sSection].GetValue(i);
 			j.MakeLower();
-			if(j=="nod" || j=="gdi") continue;
+			if (j == "nod" || j == "gdi") continue;
 #endif	
-			
-			if(bNumbers)
+
+			if (bNumbers)
 			{
 				char c[50];
-				int n=atoi(*ini.sections[sSection].GetValueName(i));				
+				int n = atoi(*ini.sections[sSection].GetValueName(i));
 				itoa(n, c, 10);
-#ifdef RA2_MODE
-				if(bCountries)
-				{
-					int preexisting=0;
-					int e;
-					for(e=0;e<i;e++)
+
+				#ifdef RA2_MODE
+					if (bCountries)
 					{
-						if(rules.sections[sSection].FindValue(*ini.sections[sSection].GetValue(e))>=0)
-							preexisting++;
+						int preexisting = 0;
+						int e;
+						for (e = 0;e < i;e++)
+						{
+							if (rules.sections[sSection].FindValue(*ini.sections[sSection].GetValue(e)) >= 0)
+								preexisting++;
+						}
+						if (rules.sections[sSection].FindValue(*ini.sections[sSection].GetValue(i)) >= 0)
+						{
+							itoa(rules.sections[sSection].value_orig_pos[*rules.sections[sSection].GetValueName(rules.sections[sSection].FindValue(*ini.sections[sSection].GetValue(i)))], c, 10);
+						}
+						else
+						{
+							itoa(n + crulesh - preexisting, c, 10);
+						}
 					}
-					if(rules.sections[sSection].FindValue(*ini.sections[sSection].GetValue(i))>=0)
-					{
-						itoa(rules.sections[sSection].value_orig_pos[*rules.sections[sSection].GetValueName(rules.sections[sSection].FindValue(*ini.sections[sSection].GetValue(i)))], c, 10);
-					}
-					else
-					{
-						itoa(n+crulesh-preexisting, c, 10);
-					}
-				}
-#endif
-				j=c;
-				j+=" ";
-				j+=TranslateHouse(*ini.sections[sSection].GetValue(i), TRUE);
+				#endif
+
+				j = c;
+				j += " ";
+				j += TranslateHouse(*ini.sections[sSection].GetValue(i), TRUE);
+
 			}
 			else
-				j=TranslateHouse(*ini.sections[sSection].GetValue(i), TRUE);
-
-			cb.AddString(j);		
+			{
+				j = TranslateHouse(*ini.sections[sSection].GetValue(i), TRUE);
+				cb.AddString(j);
+			}
 		}
 	}
 	else
@@ -1361,16 +1416,16 @@ void ListHouses(CComboBox &cb, BOOL bNumbers, BOOL bCountries, BOOL bPlayers)
 
 		if(bNumbers)
 		{
-
 			for(i=0;i<rules.sections[HOUSES].values.size();i++)
 			{
 				CString j;
 
-#ifdef RA2_MODE
-				j=*rules.sections[HOUSES].GetValue(i);
-				j.MakeLower();
-				if(j=="nod" || j=="gdi") continue;
-#endif				
+				#ifdef RA2_MODE
+					j=*rules.sections[HOUSES].GetValue(i);
+					j.MakeLower();
+					if(j=="nod" || j=="gdi") continue;
+				#endif	
+
 				j=*rules.sections[HOUSES].GetValueName(i);
 				j+=" ";
 				j+=TranslateHouse(*rules.sections[HOUSES].GetValue(i), TRUE);
@@ -1378,18 +1433,18 @@ void ListHouses(CComboBox &cb, BOOL bNumbers, BOOL bCountries, BOOL bPlayers)
 				cb.AddString(j);	
 			}
 
-
 			if(!yuri_mode || !bPlayers )
 			{
 				for(i=0;i<8;i++)
 				{
 					int k=i;
-	#ifdef RA2_MODE
-					k+=crulesh;
+					#ifdef RA2_MODE
+						k+=crulesh;
 					
 					
-					//rules.sections[HOUSES].values.size();
-	#endif
+						//rules.sections[HOUSES].values.size();
+					#endif
+
 					CString j;
 					char c[50];
 					itoa(k,c,10);
@@ -1430,11 +1485,11 @@ void ListHouses(CComboBox &cb, BOOL bNumbers, BOOL bCountries, BOOL bPlayers)
 			{
 				CString j;
 
-#ifdef RA2_MODE
-				j=*rules.sections[HOUSES].GetValue(i);
-				j.MakeLower();
-				if(j=="nod" || j=="gdi") continue;
-#endif				
+				#ifdef RA2_MODE
+					j=*rules.sections[HOUSES].GetValue(i);
+					j.MakeLower();
+					if(j=="nod" || j=="gdi") continue;
+				#endif				
 
 				if(bNumbers)
 				{
@@ -1443,15 +1498,18 @@ void ListHouses(CComboBox &cb, BOOL bNumbers, BOOL bCountries, BOOL bPlayers)
 					j+=TranslateHouse(*rules.sections[HOUSES].GetValue(i), TRUE);
 				}
 				else
-					j=TranslateHouse(*rules.sections[HOUSES].GetValue(i), TRUE);
-
-				cb.AddString(j);		
+				{
+					j = TranslateHouse(*rules.sections[HOUSES].GetValue(i), TRUE);
+					cb.AddString(j);
+				}				
 			}
 		}
 	}
 
-	if(sel>=0) cb.SetCurSel(sel);
-
+	if (sel >= 0)
+	{
+		cb.SetCurSel(sel);
+	}
 }
 
 
@@ -1479,6 +1537,7 @@ void ListTeamTypes(CComboBox &cb, BOOL bListNone)
 	if(sel>=0) cb.SetCurSel(sel);
 }
 
+
 void ListWaypoints(CComboBox &cb)
 {
 	CIniFile& ini=Map->GetIniFile();
@@ -1496,8 +1555,12 @@ void ListWaypoints(CComboBox &cb)
 		cb.AddString(s);
 	}
 
-	if(sel>=0) cb.SetCurSel(sel);
+	if (sel >= 0)
+	{
+		cb.SetCurSel(sel);
+	}
 }
+
 
 void ListTargets(CComboBox &cb)
 {
@@ -1514,19 +1577,20 @@ void ListTargets(CComboBox &cb)
 	cb.AddString("7 - Base defenses");
 	cb.AddString("9 - Power plants");
 
-	if(sel>=0) cb.SetCurSel(sel);
-
+	if (sel >= 0)
+	{
+		cb.SetCurSel(sel);
+	}
 }
 
 
 CString GetHouseSectionName(CString lpHouse)
 {
-#ifndef RA2_MODE
-	return lpHouse;
-#else
-	return lpHouse+" House";
-#endif
-
+	#ifndef RA2_MODE
+		return lpHouse;
+	#else
+		return lpHouse+" House";
+	#endif
 }
 
 
@@ -1597,6 +1661,7 @@ void GetNodeName(CString & name, int n)
 	name=c;
 }
 
+
 int GetNodeAt(CString& owner, CString& type, int x, int y)
 {
 	CIniFile& ini=Map->GetIniFile();
@@ -1661,10 +1726,10 @@ int GetNodeAt(CString& owner, CString& type, int x, int y)
 		}
 	}
 	else
+	{
 		return -1;
-	
-	
-	
+	}
+		
 	return -1;
 }
 
@@ -1673,7 +1738,10 @@ std::unique_ptr<CBitmap> BitmapFromResource(int resource_id)
 {
 	std::unique_ptr<CBitmap> bm(new CBitmap);
 	if (!bm->LoadBitmap(resource_id))
+	{
 		throw BitmapNotFound();
+	}
+
 	return bm;
 }
 
@@ -1681,7 +1749,10 @@ std::unique_ptr<CBitmap> BitmapFromFile(const CString& filepath)
 {
 	std::unique_ptr<CBitmap> bm(new CBitmap);
 	if (!bm->LoadBitmap(filepath))
+	{
 		throw BitmapNotFound();
+	}
+		
 	return bm;
 }
 
@@ -1730,6 +1801,7 @@ void GetDrawBorder(const BYTE* data, int width, int line, int& left, int& right,
 		}
 	}
 }
+
 
 CComPtr<IDirectDrawSurface4> BitmapToSurface(IDirectDraw4 * pDD, const CBitmap& bitmap)
 {

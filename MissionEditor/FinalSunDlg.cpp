@@ -205,7 +205,7 @@ BEGIN_MESSAGE_MAP(CFinalSunDlg, CDialog)
 	ON_COMMAND(ID_MAPTOOLS_AUTOCREATESHORES, OnMaptoolsAutocreateshores)
 	ON_COMMAND(ID_OPTIONS_DISABLEAUTOSHORE, OnOptionsDisableautoshore)
 	ON_COMMAND(ID_OPTIONS_DISABLEAUTOLAT, OnOptionsDisableautolat)
-	ON_COMMAND(ID_OPTIONS_OPENLAST, OnOptionsOpenLastMapOnStartup)
+	ON_COMMAND(ID_OPTIONS_OPENLAST, OnOptionsLoadLastMapOnStart)
 	ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 	ON_COMMAND(ID_EDIT_COPYWHOLEMAP, OnEditCopywholemap)
@@ -344,8 +344,7 @@ BOOL CFinalSunDlg::OnInitDialog()
 	errstream << "Updating menu" << endl;
 	errstream.flush();
 	
-	//if(theApp.m_Options.bEasy && GetMenu()) GetMenu()->CheckMenuItem(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND | MF_CHECKED);
-	//if(theApp.m_Options.bOpenLastMap && GetMenu()) GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_CHECKED);
+	if(theApp.m_Options.bEasy && GetMenu()) GetMenu()->CheckMenuItem(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND | MF_CHECKED);	
 	
 	UpdateStrings();
 
@@ -374,36 +373,23 @@ BOOL CFinalSunDlg::OnInitDialog()
 	CDialog::BringWindowToTop();
 	
 
-	// YR Redux: added open last map at startup 910/9/2024
-	if(strlen(currentMapFile)==0)
+	// Open last map on startup.
+	if (strlen(currentMapFile) == 0)
 	{
-		// Check if maps have been previously opened.
-		if (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps) > 0)
+		// Check if the user has enabled the setting to open the last map on startup.
+		// Check if the recent maps list contains a map name.
+		if (theApp.m_Options.bOpenLastMap && strlen(theApp.m_Options.prev_maps[0]) > 0)
 		{
-			// Check if user has enabled the option to load last used map.
-			if(theApp.m_Options.bOpenLastMap == TRUE)
-			{
-				int i;
-				CString f;
-
-				// Check that the map files exist and attempt to open each one.
-				for (i = 0; (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) > i; i++)
-				{
-					if ((sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) > 1)
-					{
-						f = theApp.m_Options.prev_maps[i];
-						f.MakeLower();
-						break;
-					}
-					else
-					{
-						OnFileOpenmap();
-					}
-				}
-
-				strcpy(currentMapFile, f);
-				Map->LoadMap(currentMapFile);
-			}
+			CString f;
+			f = theApp.m_Options.prev_maps[0];
+			f.MakeLower();
+			strcpy(currentMapFile, f);
+			Map->LoadMap(currentMapFile);
+		}
+		else
+		{
+			// Open the file open dialog instead of a map.
+			OnFileOpenmap();
 		}
 	}
 	else
@@ -2061,14 +2047,14 @@ void CFinalSunDlg::UpdateStrings()
 	// YR Redux: Increased recent file list from 4 to 10.
 	int prev_maps_count=0;
 
-	for(i=0; i< (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)); i++)
+	for(i=0; i < (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)); i++)
 	{
 		if(theApp.m_Options.prev_maps[i].GetLength()>0)
 		{
 			prev_maps_count++;
 
 			int id=0;
-			CString str="bla";
+			CString str="a";
 			str=theApp.m_Options.prev_maps[i];
 		
 			if(i==0) id=ID_FILE_FILE1;
@@ -2210,9 +2196,9 @@ void CFinalSunDlg::UnloadAll()
 void CFinalSunDlg::OnOptionsSimpleview() 
 {
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath+"\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath+"\\FSSettings.ini");
 	#ifdef RA2_MODE
-		Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
+		Options.LoadFile(u8AppDataPath+"\\FASettings.ini");
 	#endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_SIMPLEVIEW, MF_BYCOMMAND) & MF_CHECKED)
@@ -2234,9 +2220,9 @@ void CFinalSunDlg::OnOptionsSimpleview()
 	UpdateStrings();
 
 	#ifndef RA2_MODE
-		Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+		Options.SaveFile(u8AppDataPath+"\\FSSettings.ini");
 	#else
-		Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+		Options.SaveFile(u8AppDataPath+"\\FASettings.ini");
 	#endif
 
 	UpdateDialogs();
@@ -2690,10 +2676,10 @@ void CFinalSunDlg::OnTerrainHeightenground()
 
 	if(AD.mode!=ACTIONMODE_HEIGHTEN)
 	{
-		m_settingsbar.m_BrushSize=1;
+		m_settingsbar.m_BrushSize=0;
 		m_settingsbar.UpdateData(FALSE);
-		m_view.m_isoview->m_BrushSize_x=2;
-		m_view.m_isoview->m_BrushSize_y=2;
+		m_view.m_isoview->m_BrushSize_x=1;
+		m_view.m_isoview->m_BrushSize_y=1;
 	}
 
 	Sound(SOUND_POSITIVE);
@@ -2712,10 +2698,10 @@ void CFinalSunDlg::OnTerrainLowerground()
 
 	if(AD.mode!=ACTIONMODE_LOWER)
 	{
-		m_settingsbar.m_BrushSize=1;
+		m_settingsbar.m_BrushSize=0;
 		m_settingsbar.UpdateData(FALSE);
-		m_view.m_isoview->m_BrushSize_x=2;
-		m_view.m_isoview->m_BrushSize_y=2;
+		m_view.m_isoview->m_BrushSize_x=1;
+		m_view.m_isoview->m_BrushSize_y=1;
 	}
 
 	Sound(SOUND_POSITIVE);
@@ -2793,10 +2779,10 @@ void CFinalSunDlg::OnTerrainFlatten()
 
 	if(AD.mode!=ACTIONMODE_FLATTENGROUND)
 	{
-		m_settingsbar.m_BrushSize=1;
+		m_settingsbar.m_BrushSize=0;
 		m_settingsbar.UpdateData(FALSE);
-		m_view.m_isoview->m_BrushSize_x=2;
-		m_view.m_isoview->m_BrushSize_y=2;
+		m_view.m_isoview->m_BrushSize_x=1;
+		m_view.m_isoview->m_BrushSize_y=1;
 	}
 	Sound(SOUND_POSITIVE);
 
@@ -3490,9 +3476,9 @@ void CFinalSunDlg::OnMaptoolsAutocreateshores()
 void CFinalSunDlg::OnOptionsDisableautoshore() 
 {
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath+"\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath+"\\FSSettings.ini");
 	#ifdef RA2_MODE
-		Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
+		Options.LoadFile(u8AppDataPath+"\\FASettings.ini");
 	#endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_DISABLEAUTOSHORE, MF_BYCOMMAND) & MF_CHECKED)
@@ -3507,11 +3493,11 @@ void CFinalSunDlg::OnOptionsDisableautoshore()
 		theApp.m_Options.bDisableAutoShore=TRUE;
 		Options.sections["UserInterface"].values["DisableAutoShore"]="1";
 	}
-	
+
 	#ifndef RA2_MODE
-		Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+		Options.SaveFile(u8AppDataPath+"\\FSSettings.ini");
 	#else
-		Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+		Options.SaveFile(u8AppDataPath+"\\FASettings.ini");
 	#endif
 }
 
@@ -3519,9 +3505,9 @@ void CFinalSunDlg::OnOptionsDisableautoshore()
 void CFinalSunDlg::OnOptionsDisableautolat() 
 {
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath+"\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath+"\\FSSettings.ini");
 	#ifdef RA2_MODE
-		Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
+		Options.LoadFile(u8AppDataPath+"\\FASettings.ini");
 	#endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_DISABLEAUTOLAT, MF_BYCOMMAND) & MF_CHECKED)
@@ -3538,38 +3524,39 @@ void CFinalSunDlg::OnOptionsDisableautolat()
 	}
 
 	#ifndef RA2_MODE
-		Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+		Options.SaveFile(u8AppDataPath+"\\FSSettings.ini");
 	#else
-		Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+		Options.SaveFile(u8AppDataPath+"\\FASettings.ini");
 	#endif
 }
 
 
-void CFinalSunDlg::OnOptionsOpenLastMapOnStartup()
+void CFinalSunDlg::OnOptionsLoadLastMapOnStart()
 {
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath + "\\FinalSun.ini");
-	#ifdef RA2_MODE
-		Options.LoadFile(u8AppDataPath + "\\FinalAlert.ini");
+	#ifndef RA2_MODE
+		Options.LoadFile(u8AppDataPath + "\\FSSettings.ini");
+	#else
+		Options.LoadFile(u8AppDataPath + "\\FASettings.ini");
 	#endif
 
 	if (GetMenu()->GetMenuState(ID_OPTIONS_OPENLAST, MF_BYCOMMAND) & MF_CHECKED)
 	{
 		GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_UNCHECKED);
 		theApp.m_Options.bOpenLastMap = FALSE;
-		Options.sections["UserInterface"].values["OpenLastMapOnStartup"] = "0";
+		Options.sections["UserInterface"].values["LoadLastMapOnStart"] = "0";
 	}
 	else
 	{
 		GetMenu()->CheckMenuItem(ID_OPTIONS_OPENLAST, MF_BYCOMMAND | MF_CHECKED);
 		theApp.m_Options.bOpenLastMap = TRUE;
-		Options.sections["UserInterface"].values["OpenLastMapOnStartup"] = "1";
+		Options.sections["UserInterface"].values["LoadLastMapOnStart"] = "1";
 	}
 
 	#ifndef RA2_MODE
-		Options.SaveFile(u8AppDataPath + "\\FinalSun.ini");
+		Options.SaveFile(u8AppDataPath + "\\FSSettings.ini");
 	#else
-		Options.SaveFile(u8AppDataPath + "\\FinalAlert.ini");
+		Options.SaveFile(u8AppDataPath + "\\FASettings.ini");
 	#endif
 }
 
@@ -3581,13 +3568,11 @@ void CFinalSunDlg::OnEditPaste()
 	AD.z_data=0;
 }
 
-
 void CFinalSunDlg::OnEditCopy() 
 {
 	Sound(SOUND_POSITIVE);
 	AD.mode=ACTIONMODE_COPY;	
 }
-
 
 void CFinalSunDlg::OnEditCopywholemap() 
 {
@@ -3595,14 +3580,12 @@ void CFinalSunDlg::OnEditCopywholemap()
 	Map->Copy();	
 }
 
-
 void CFinalSunDlg::OnEditPastewholemap() 
 {
 	Sound(SOUND_POSITIVE);
 	Map->Paste(Map->GetIsoSize()/2,Map->GetIsoSize()/2,0);
 	m_view.m_isoview->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 }
-
 
 void CFinalSunDlg::OnMarblemadness() 
 {
@@ -3619,7 +3602,6 @@ void CFinalSunDlg::OnMarblemadness()
 	m_view.m_isoview->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 	m_view.m_browser->m_view.SetTileSet(m_view.m_browser->m_view.m_currentTileSet, TRUE);
 }
-
 
 void CFinalSunDlg::CheckAvail(CCmdUI *pCmdUI)
 {
@@ -3648,9 +3630,9 @@ void CFinalSunDlg::CheckAvail(CCmdUI *pCmdUI)
 void CFinalSunDlg::OnOptionsSounds() 
 {
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath+"\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath+"\\FSSettings.ini");
 #ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
+	Options.LoadFile(u8AppDataPath+"\\FASettings.ini");
 #endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_SOUNDS, MF_BYCOMMAND) & MF_CHECKED)
@@ -3668,9 +3650,9 @@ void CFinalSunDlg::OnOptionsSounds()
 
 	
 	#ifndef RA2_MODE
-		Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+		Options.SaveFile(u8AppDataPath+"\\FSSettings.ini");
 	#else
-		Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+		Options.SaveFile(u8AppDataPath+"\\FASettings.ini");
 	#endif	
 }
 
@@ -3684,9 +3666,9 @@ void CFinalSunDlg::OnUpdateOptionsSounds(CCmdUI* pCmdUI)
 void CFinalSunDlg::OnOptionsDisableslopecorrection() 
 {
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath +"\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath +"\\FSSettings.ini");
 #ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath +"\\FinalAlert.ini");
+	Options.LoadFile(u8AppDataPath +"\\FASettings.ini");
 #endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_DISABLESLOPECORRECTION, MF_BYCOMMAND) & MF_CHECKED)
@@ -3703,9 +3685,9 @@ void CFinalSunDlg::OnOptionsDisableslopecorrection()
 	}
 
 #ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
+	Options.SaveFile(u8AppDataPath+"\\FSSettings.ini");
 #else
-	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
+	Options.SaveFile(u8AppDataPath+"\\FASettings.ini");
 #endif	
 }
 
@@ -3714,9 +3696,9 @@ void CFinalSunDlg::OnOptionsShowbuildingoutline()
 			
 
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath+"\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath+"\\FSSettings.ini");
 #ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath+"\\FinalAlert.ini");
+	Options.LoadFile(u8AppDataPath+"\\FASettings.ini");
 #endif
 
 	if(GetMenu()->GetMenuState(ID_OPTIONS_SHOWBUILDINGOUTLINE, MF_BYCOMMAND) & MF_CHECKED)
@@ -3735,9 +3717,9 @@ void CFinalSunDlg::OnOptionsShowbuildingoutline()
 	m_view.m_isoview->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 
 #ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath +"\\FinalSun.ini");
+	Options.SaveFile(u8AppDataPath +"\\FSSettings.ini");
 #else
-	Options.SaveFile(u8AppDataPath +"\\FinalAlert.ini");
+	Options.SaveFile(u8AppDataPath +"\\FASettings.ini");
 #endif	
 }
 
@@ -3748,7 +3730,6 @@ void CFinalSunDlg::OnFileFile1()
 	if (DoesFileExist(theApp.m_Options.prev_maps[0]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[0]);
-		theApp.RecentFiles[0] = TRUE;
 	}
 }
 
@@ -3757,7 +3738,6 @@ void CFinalSunDlg::OnFileFile2()
 	if (DoesFileExist(theApp.m_Options.prev_maps[1]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[1]);
-		theApp.RecentFiles[1] = TRUE;
 	}
 }
 
@@ -3766,7 +3746,6 @@ void CFinalSunDlg::OnFileFile3()
 	if (DoesFileExist(theApp.m_Options.prev_maps[2]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[2]);
-		theApp.RecentFiles[2] = TRUE;
 	}
 }
 
@@ -3775,7 +3754,6 @@ void CFinalSunDlg::OnFileFile4()
 	if (DoesFileExist(theApp.m_Options.prev_maps[3]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[3]);
-		theApp.RecentFiles[3] = TRUE;
 	}
 }
 
@@ -3784,7 +3762,6 @@ void CFinalSunDlg::OnFileFile5()
 	if (DoesFileExist(theApp.m_Options.prev_maps[4]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[4]);
-		theApp.RecentFiles[4] = TRUE;
 	}
 }
 
@@ -3793,7 +3770,6 @@ void CFinalSunDlg::OnFileFile6()
 	if (DoesFileExist(theApp.m_Options.prev_maps[5]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[5]);
-		theApp.RecentFiles[5] = TRUE;
 	}
 }
 
@@ -3802,7 +3778,6 @@ void CFinalSunDlg::OnFileFile7()
 	if (DoesFileExist(theApp.m_Options.prev_maps[6]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[6]);
-		theApp.RecentFiles[6] = TRUE;
 	}
 }
 
@@ -3811,7 +3786,6 @@ void CFinalSunDlg::OnFileFile8()
 	if (DoesFileExist(theApp.m_Options.prev_maps[7]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[7]);
-		theApp.RecentFiles[7] = TRUE;
 	}
 }
 
@@ -3820,7 +3794,6 @@ void CFinalSunDlg::OnFileFile9()
 	if (DoesFileExist(theApp.m_Options.prev_maps[8]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[8]);
-		theApp.RecentFiles[8] = TRUE;
 	}
 }
 
@@ -3829,7 +3802,6 @@ void CFinalSunDlg::OnFileFile10()
 	if (DoesFileExist(theApp.m_Options.prev_maps[9]))
 	{
 		OpenMap(theApp.m_Options.prev_maps[9]);
-		theApp.RecentFiles[9] = TRUE;
 	}
 }
 
@@ -3837,7 +3809,6 @@ void CFinalSunDlg::OnFileFile10()
 void CFinalSunDlg::InsertPrevFile(CString lpFilename)
 {
 	int i;
-
 	for(i=0; i < (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)); i++)
 	{
 		CString f=theApp.m_Options.prev_maps[i];
@@ -3852,10 +3823,10 @@ void CFinalSunDlg::InsertPrevFile(CString lpFilename)
 	}
 
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath +"\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath +"\\FSSettings.ini");
 
 	#ifdef RA2_MODE
-		Options.LoadFile(u8AppDataPath +"\\FinalAlert.ini");
+		Options.LoadFile(u8AppDataPath +"\\FASettings.ini");
 	#endif
 
 	for(i = (sizeof(theApp.m_Options.prev_maps) / sizeof(*theApp.m_Options.prev_maps)) - 1; i>0; i--)
@@ -3871,9 +3842,9 @@ void CFinalSunDlg::InsertPrevFile(CString lpFilename)
 	Options.sections["Files"].values["0"]=theApp.m_Options.prev_maps[0];
 
 #ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath +"\\FinalSun.ini");
+	Options.SaveFile(u8AppDataPath +"\\FSSettings.ini");
 #else
-	Options.SaveFile(u8AppDataPath +"\\FinalAlert.ini");
+	Options.SaveFile(u8AppDataPath +"\\FASettings.ini");
 #endif	
 
 	UpdateStrings(); 
@@ -4054,9 +4025,9 @@ void CFinalSunDlg::OnHelpShowlogs()
 void CFinalSunDlg::OnOptionsSmoothzoom()
 {
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath + "\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath + "\\FSSettings.ini");
 #ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath + "\\FinalAlert.ini");
+	Options.LoadFile(u8AppDataPath + "\\FASettings.ini");
 #endif
 
 	if (GetMenu()->GetMenuState(ID_OPTIONS_SMOOTHZOOM, MF_BYCOMMAND) & MF_CHECKED)
@@ -4073,9 +4044,9 @@ void CFinalSunDlg::OnOptionsSmoothzoom()
 	Options.sections["UserInterface"].values["ViewScaleUseSteps"] = theApp.m_Options.viewScaleUseSteps ? "1" : "0";
 
 #ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath + "\\FinalSun.ini");
+	Options.SaveFile(u8AppDataPath + "\\FSSettings.ini");
 #else
-	Options.SaveFile(u8AppDataPath + "\\FinalAlert.ini");
+	Options.SaveFile(u8AppDataPath + "\\FASettings.ini");
 #endif
 }
 
@@ -4092,9 +4063,9 @@ BOOL CFinalSunDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 void CFinalSunDlg::OnOptionsUsedefaultmousecursor()
 {
 	CIniFile Options;
-	Options.LoadFile(u8AppDataPath + "\\FinalSun.ini");
+	Options.LoadFile(u8AppDataPath + "\\FSSettings.ini");
 #ifdef RA2_MODE
-	Options.LoadFile(u8AppDataPath + "\\FinalAlert.ini");
+	Options.LoadFile(u8AppDataPath + "\\FASettings.ini");
 #endif
 
 	if (GetMenu()->GetMenuState(ID_OPTIONS_USEDEFAULTMOUSECURSOR, MF_BYCOMMAND) & MF_CHECKED)
@@ -4113,8 +4084,8 @@ void CFinalSunDlg::OnOptionsUsedefaultmousecursor()
 	Options.sections["UserInterface"].values["UseDefaultMouseCursor"] = theApp.m_Options.useDefaultMouseCursor ? "1" : "0";
 
 #ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath + "\\FinalSun.ini");
+	Options.SaveFile(u8AppDataPath + "\\FSSettings.ini");
 #else
-	Options.SaveFile(u8AppDataPath + "\\FinalAlert.ini");
+	Options.SaveFile(u8AppDataPath + "\\FASettings.ini");
 #endif
 }

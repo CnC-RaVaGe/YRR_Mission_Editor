@@ -6624,7 +6624,6 @@ void CIsoView::DrawMap()
 		dd->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, NULL);
 	FlipHighResBuffer();
 	last_succeeded_operation = 10100;
-
 }
 
 // Draw map bounds lines for map edge and visible area.
@@ -6699,27 +6698,27 @@ void CIsoView::RenderUIOverlay()
 	auto ls_br = useHighRes ? ScaleBackToFrontBuffer(l_br) : l_br;
 
 	// YR Redux: Changed map bound line colours
-	auto blue = m_color_converter->GetColor(21, 101, 192);
-	auto gray = m_color_converter->GetColor(158, 158, 158);
-	auto black = m_color_converter->GetColor(0, 0, 0);
+	auto visible = m_color_converter->GetColor(0, 128, 255); //(21, 101, 192)
+	auto playable = m_color_converter->GetColor(0, 220, 0);
+	auto bounds = m_color_converter->GetColor(0, 0, 0);
 
 	// Map bounds
-	d.Rectangle(sllt.x, sllt.y-2, slbr.x, slbr.y, black);
-	d.Rectangle(sllt.x-1, sllt.y-3, slbr.x-1, slbr.y+1, black);
-	d.Rectangle(sllt.x+1, sllt.y-4, slbr.x+1, slbr.y+2, black);
-	d.Rectangle(sllt.x+2, sllt.y-5, slbr.x-2, slbr.y+3, black);
-
-	// YR Redux: Added map playable area
-	d.Rectangle(l_tt.x, l_tt.y - 2, ls_br.x, ls_br.y - 1, gray);
-	d.Rectangle(l_tt.x, l_tt.y - 1, ls_br.x, ls_br.y - 1, gray);
-	d.Rectangle(l_tt.x, l_tt.y, ls_br.x, ls_br.y - 1, gray);
+	d.Rectangle(sllt.x, sllt.y-2, slbr.x, slbr.y, bounds);
+	d.Rectangle(sllt.x-1, sllt.y-3, slbr.x-1, slbr.y+1, bounds);
+	d.Rectangle(sllt.x+1, sllt.y-4, slbr.x+1, slbr.y+2, bounds);
+	d.Rectangle(sllt.x+2, sllt.y-5, slbr.x-2, slbr.y+3, bounds);
 
 	// Map visible area
-	d.Rectangle(ls_lt.x-1, ls_lt.y+1, ls_br.x-2, ls_br.y-1, blue);
-	d.Rectangle(ls_lt.x+2, ls_lt.y, ls_br.x+1, ls_br.y-2, blue);
-	d.Rectangle(ls_lt.x, ls_lt.y-1, ls_br.x, ls_br.y-3, blue);
-	d.Rectangle(ls_lt.x+1, ls_lt.y, ls_br.x-1, ls_br.y-4, blue);
+	d.Rectangle(ls_lt.x-1, ls_lt.y+1, ls_br.x-2, ls_br.y-1, visible);
+	d.Rectangle(ls_lt.x+2, ls_lt.y, ls_br.x+1, ls_br.y-2, visible);
+	d.Rectangle(ls_lt.x, ls_lt.y-1, ls_br.x, ls_br.y-3, visible);
+	d.Rectangle(ls_lt.x+1, ls_lt.y, ls_br.x-1, ls_br.y-4, visible);
 
+	// YR Redux: Added map playable area
+	d.Rectangle(l_tt.x-1, l_tt.y-2, ls_br.x-2, ls_br.y-1, playable);
+	d.Rectangle(l_tt.x+2, l_tt.y-1, ls_br.x+1, ls_br.y-2, playable);
+	d.Rectangle(l_tt.x, l_tt.y-1, ls_br.x, ls_br.y-3, playable);
+	d.Rectangle(l_tt.x+1, l_tt.y, ls_br.x-1, ls_br.y-4, playable);
 
 	dds->Unlock(NULL);
 	

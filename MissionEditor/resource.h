@@ -518,7 +518,12 @@
 #define IDC_COMBO1                      1460
 #define IDC_LICENSE_AND_COPYRIGHT       1461
 #define IDC_PREFER_LOCAL_THEATER_INI_FILES 1462
-#define IDC_PREFER_LOCAL_THEATER_FILES  1463
+#define IDC_LOADLAST_CB                 1463
+#define IDC_VSYNC_CB                    1464
+#define IDC_MINIMAPSIZE                 1465
+#define IDC_STATIC1                     1465
+#define IDC_DISABLECURSOR_CB            1466
+#define IDC_PREFER_LOCAL_THEATER_FILES  1467
 #define ID_FILE_OPENMAP                 40001
 #define ID_FILE_SAVEAS                  40002
 #define ID_FILE_QUIT                    40003
@@ -619,8 +624,7 @@
 #define ID_VIEW_SHOWBASENODES           40167
 #define ID_VIEW_SHOWCELL                40168
 #define ID_BUTTON40171                  40171
-#define ID_OPTIONS_OPENLASTMAPONSTARTUP 40200
-#define ID_OPTIONS_OPENLAST             40201
+#define ID_OPTIONS_OPENLAST             40200
 #define IDS_LINEARVERSION               57604
 #define IDC_TOOLTIPCENTER               65535
 
@@ -630,7 +634,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        308
 #define _APS_NEXT_COMMAND_VALUE         40202
-#define _APS_NEXT_CONTROL_VALUE         1464
+#define _APS_NEXT_CONTROL_VALUE         1466
 #define _APS_NEXT_SYMED_VALUE           111
 #endif
 #endif

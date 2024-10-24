@@ -219,6 +219,7 @@ protected:
 	afx_msg void OnOptionsDisableautoshore();
 	afx_msg void OnOptionsOpenLastMapOnStartup();
 	afx_msg void OnOptionsDisableautolat();
+	afx_msg void OnOptionsLoadLastMapOnStart();
 	afx_msg void OnEditPaste();
 	afx_msg void OnEditCopy();
 	afx_msg void OnEditCopywholemap();

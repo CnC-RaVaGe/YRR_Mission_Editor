@@ -58,9 +58,9 @@ struct OPTIONS{
 	BOOL bDoNotLoadOverlayGraphics;
 	BOOL bDisableAutoShore;
 	BOOL bDisableAutoLat;
+	BOOL bOpenLastMap;
 	BOOL bNoSounds;
 	BOOL bDisableSlopeCorrection;
-	BOOL bOpenLastMap;
 	float fMiniMapScale = 2.0f;
 	float fLoadScreenDelayInSeconds = 0.0f; //3.5f YR Redux: removed load screen delay, loading is faster now. 9/9/2024
 	bool bShowStats = false;
