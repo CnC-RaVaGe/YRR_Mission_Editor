@@ -376,23 +376,20 @@ BOOL CFinalSunDlg::OnInitDialog()
 	// Open last map on startup.
 	if (strlen(currentMapFile) == 0)
 	{
-		// Check if the user has enabled the setting to open the last map on startup
-		if (theApp.m_Options.bOpenLastMap = TRUE)
+		// Check if the user has enabled the setting to open the last map on startup.
+		// Check if the recent maps list contains a map name.
+		if (theApp.m_Options.bOpenLastMap && strlen(theApp.m_Options.prev_maps[0]) > 0)
 		{
-			// Check if the recent maps list contains a map name.
-			if (strlen(theApp.m_Options.prev_maps[0]) > 0)
-			{
-				CString f;
-				f = theApp.m_Options.prev_maps[0];
-				f.MakeLower();
-				strcpy(currentMapFile, f);
-				Map->LoadMap(currentMapFile);
-			}
-			else
-			{
-				// Open the file open dialog instead of a map.
-				OnFileOpenmap();
-			}
+			CString f;
+			f = theApp.m_Options.prev_maps[0];
+			f.MakeLower();
+			strcpy(currentMapFile, f);
+			Map->LoadMap(currentMapFile);
+		}
+		else
+		{
+			// Open the file open dialog instead of a map.
+			OnFileOpenmap();
 		}
 	}
 	else
@@ -2679,10 +2676,10 @@ void CFinalSunDlg::OnTerrainHeightenground()
 
 	if(AD.mode!=ACTIONMODE_HEIGHTEN)
 	{
-		m_settingsbar.m_BrushSize=1;
+		m_settingsbar.m_BrushSize=0;
 		m_settingsbar.UpdateData(FALSE);
-		m_view.m_isoview->m_BrushSize_x=2;
-		m_view.m_isoview->m_BrushSize_y=2;
+		m_view.m_isoview->m_BrushSize_x=1;
+		m_view.m_isoview->m_BrushSize_y=1;
 	}
 
 	Sound(SOUND_POSITIVE);
@@ -2701,10 +2698,10 @@ void CFinalSunDlg::OnTerrainLowerground()
 
 	if(AD.mode!=ACTIONMODE_LOWER)
 	{
-		m_settingsbar.m_BrushSize=1;
+		m_settingsbar.m_BrushSize=0;
 		m_settingsbar.UpdateData(FALSE);
-		m_view.m_isoview->m_BrushSize_x=2;
-		m_view.m_isoview->m_BrushSize_y=2;
+		m_view.m_isoview->m_BrushSize_x=1;
+		m_view.m_isoview->m_BrushSize_y=1;
 	}
 
 	Sound(SOUND_POSITIVE);
@@ -2782,10 +2779,10 @@ void CFinalSunDlg::OnTerrainFlatten()
 
 	if(AD.mode!=ACTIONMODE_FLATTENGROUND)
 	{
-		m_settingsbar.m_BrushSize=1;
+		m_settingsbar.m_BrushSize=0;
 		m_settingsbar.UpdateData(FALSE);
-		m_view.m_isoview->m_BrushSize_x=2;
-		m_view.m_isoview->m_BrushSize_y=2;
+		m_view.m_isoview->m_BrushSize_x=1;
+		m_view.m_isoview->m_BrushSize_y=1;
 	}
 	Sound(SOUND_POSITIVE);
 
